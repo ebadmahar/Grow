@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Community Task</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    .task-hero { height:200px;position:relative;overflow:hidden; }
+    .task-hero img { width:100%;height:100%;object-fit:cover; }
+    .task-hero::after { content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 20%,rgba(15,21,18,0.75)); }
+    .task-hero-meta { position:absolute;bottom:16px;left:16px;right:16px;z-index:2; }
+    .task-hero-title { font-size:18px;font-weight:800;letter-spacing:-0.04em;color:#fff;line-height:1.15; }
+    .task-hero-site { font-size:11px;color:rgba(255,255,255,0.6);margin-top:3px; }
+    .info-row { display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--card-border); }
+    .info-row:last-child { border-bottom:none; }
+    .info-icon { width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex-shrink:0; }
+    .info-icon .material-icons-round { font-size:17px; }
+    .participant-row { display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--card-border); }
+    .participant-row:last-child { border-bottom:none; }
+    .p-avatar { width:34px;height:34px;border-radius:50%;overflow:hidden;background:var(--surface-2);flex-shrink:0;display:grid;place-items:center; }
+    .p-avatar .material-icons-round { font-size:18px;color:var(--text-muted); }
+  </style>
+</head>
+<body>
+<div class="app-shell screen">
+  <header class="app-header" style="position:absolute;background:transparent;border-bottom:none;">
+    <a href="./community_hub.html" class="icon-btn" style="background:rgba(255,255,255,0.88);"><span class="material-icons-round">arrow_back</span></a>
+    <div></div>
+    <a href="./notifications.html" class="icon-btn" style="background:rgba(255,255,255,0.88);"><span class="material-icons-round">notifications</span></a>
+  </header>
+  <div class="task-hero">
+    <img src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&w=800&q=80" alt="Task"/>
+    <div class="task-hero-meta">
+      <div class="task-hero-title">Margalla Trail Plantation</div>
+      <div class="task-hero-site">Margalla Hills, Islamabad</div>
+    </div>
+  </div>
+  <main class="p-page" style="display:flex;flex-direction:column;gap:14px;margin-top:8px;">
+    <div style="display:flex;gap:8px;">
+      <span class="badge badge-lime">Open Task</span>
+      <span class="badge badge-neutral">18 Volunteers</span>
+      <span class="badge badge-neutral">This Weekend</span>
+    </div>
+    <div class="card anim">
+      <div class="info-row">
+        <div class="info-icon" style="background:#EAF9EF;"><span class="material-icons-round" style="color:#1A6636;">forest</span></div>
+        <div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);">Activity Type</div><div style="font-size:13px;font-weight:700;color:var(--text-1);margin-top:1px;">Tree Plantation</div></div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon" style="background:var(--surface-2);"><span class="material-icons-round" style="color:var(--text-3);">calendar_today</span></div>
+        <div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);">Date &amp; Time</div><div style="font-size:13px;font-weight:700;color:var(--text-1);margin-top:1px;">Saturday, 30 Aug · 7:00 AM</div></div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon" style="background:var(--surface-2);"><span class="material-icons-round" style="color:var(--text-3);">person</span></div>
+        <div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);">Organized By</div><div style="font-size:13px;font-weight:700;color:var(--text-1);margin-top:1px;">Ebad Mahar</div></div>
+      </div>
+      <div class="info-row" style="border-bottom:none;">
+        <div class="info-icon" style="background:var(--surface-2);"><span class="material-icons-round" style="color:var(--text-3);">info</span></div>
+        <div style="flex:1;"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);">Description</div><div style="font-size:12px;color:var(--text-3);margin-top:3px;line-height:1.5;">Join us for a community plantation drive at Margalla Trail. Bring water and wear comfortable clothes. Saplings and tools provided.</div></div>
+      </div>
+    </div>
+    <div class="anim anim-2">
+      <div class="section-header"><span class="section-title">Participants (18)</span></div>
+      <div class="card">
+        <div class="participant-row">
+          <div class="p-avatar"><img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80" alt=""/></div>
+          <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:var(--text-1);">Ebad Mahar</div><div style="font-size:10px;color:var(--text-muted);">Organizer</div></div>
+          <span class="badge badge-lime" style="font-size:9px;">Host</span>
+        </div>
+        <div class="participant-row">
+          <div class="p-avatar"><span class="material-icons-round">person</span></div>
+          <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:var(--text-1);">Sara Khan</div><div style="font-size:10px;color:var(--text-muted);">Field Volunteer</div></div>
+        </div>
+        <div class="participant-row" style="border-bottom:none;">
+          <div class="p-avatar"><span class="material-icons-round">person</span></div>
+          <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:var(--text-1);">Ali Raza</div><div style="font-size:10px;color:var(--text-muted);">Field Volunteer</div></div>
+        </div>
+      </div>
+    </div>
+    <a href="#" class="btn btn-lime anim anim-3" onclick="this.textContent='Joined!';return false;">
+      <span class="material-icons-round" style="font-size:18px;">group_add</span>
+      Join Task
+    </a>
+  </main>
+  <nav class="bottom-nav">
+    <a href="./home_dashboard.html" class="nav-item"><span class="material-icons-round">home</span><span class="nav-label">Home</span></a>
+    <a href="./explore_map.html" class="nav-item"><span class="material-icons-round">explore</span><span class="nav-label">Map</span></a>
+    <a href="./create_activity.html" class="nav-fab"><span class="material-icons-round">add</span></a>
+    <a href="./community_hub.html" class="nav-item active"><span class="material-icons-round">group</span><span class="nav-label">Community</span><span class="nav-dot"></span></a>
+    <a href="./user_profile.html" class="nav-item"><span class="material-icons-round">person</span><span class="nav-label">Profile</span></a>
+  </nav>
+</div>
+</body>
+</html>

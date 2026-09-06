@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — My Ranking</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    .rank-hero { background:var(--ink);padding:28px 20px 24px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center; }
+    .rank-hero::before { content:'';position:absolute;top:-50px;right:-50px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(200,255,85,0.10) 0%,transparent 70%); }
+    .rank-badge { width:72px;height:72px;border-radius:50%;background:var(--lime);display:grid;place-items:center;font-size:30px;font-weight:800;color:var(--ink);letter-spacing:-0.06em; }
+    .rank-name { font-size:18px;font-weight:800;letter-spacing:-0.04em;color:#fff; }
+    .rank-role { font-size:11px;color:rgba(255,255,255,0.4); }
+    .rank-pts { font-size:32px;font-weight:800;letter-spacing:-0.07em;color:var(--lime);line-height:1; }
+    .rank-pts-label { font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.10em;color:rgba(255,255,255,0.35); }
+    .metric-row { display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--card-border); }
+    .metric-row:last-child { border-bottom:none; }
+    .metric-icon { width:36px;height:36px;border-radius:11px;display:grid;place-items:center;flex-shrink:0; }
+    .metric-icon .material-icons-round { font-size:18px; }
+    .metric-info { flex:1; }
+    .metric-label { font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em; }
+    .metric-value { font-size:16px;font-weight:800;letter-spacing:-0.04em;color:var(--text-1);margin-top:1px; }
+    .next-rank-bar { background:var(--surface-2);border-radius:var(--r-md);padding:14px;display:flex;flex-direction:column;gap:8px; }
+    .next-rank-label { font-size:11px;font-weight:700;color:var(--text-3); }
+    .next-rank-title { font-size:13px;font-weight:800;color:var(--text-1); }
+  </style>
+</head>
+<body>
+<div class="app-shell" style="padding-bottom:90px;">
+  <header class="app-header" style="background:rgba(15,21,18,0.94);border-color:rgba(255,255,255,0.08);">
+    <a href="./leaderboard.html" class="icon-btn" style="background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.10);color:#fff;"><span class="material-icons-round">arrow_back</span></a>
+    <h1 class="header-title" style="color:#fff;">My Ranking</h1>
+    <div></div>
+  </header>
+  <div class="rank-hero">
+    <div class="rank-badge">#1</div>
+    <div class="rank-name">Ebad Mahar</div>
+    <div class="rank-role">Senior Field Restoration Lead</div>
+    <div class="rank-pts">9,850</div>
+    <div class="rank-pts-label">Points This Month</div>
+  </div>
+  <main class="p-page" style="display:flex;flex-direction:column;gap:14px;margin-top:8px;">
+    <div class="card anim">
+      <div class="metric-row">
+        <div class="metric-icon" style="background:#EAF9EF;"><span class="material-icons-round" style="color:#1A6636;">forest</span></div>
+        <div class="metric-info"><div class="metric-label">Trees Planted</div><div class="metric-value">14,280</div></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-icon" style="background:#F3E8FF;"><span class="material-icons-round" style="color:#7A5AF8;">grass</span></div>
+        <div class="metric-info"><div class="metric-label">Seeds Dispersed</div><div class="metric-value">3,200</div></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-icon" style="background:#E0F4FF;"><span class="material-icons-round" style="color:#0891B2;">visibility</span></div>
+        <div class="metric-info"><div class="metric-label">Monitoring Records</div><div class="metric-value">18</div></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-icon" style="background:var(--surface-2);"><span class="material-icons-round" style="color:var(--text-3);">list_alt</span></div>
+        <div class="metric-info"><div class="metric-label">Total Activities</div><div class="metric-value">32</div></div>
+      </div>
+      <div class="metric-row" style="border-bottom:none;">
+        <div class="metric-icon" style="background:var(--surface-2);"><span class="material-icons-round" style="color:var(--text-3);">verified</span></div>
+        <div class="metric-info"><div class="metric-label">Verified Activities</div><div class="metric-value">28 / 32</div></div>
+      </div>
+    </div>
+    <div class="next-rank-bar anim anim-2">
+      <div class="next-rank-label">Currently Leading</div>
+      <div class="next-rank-title">You are #1 on the Plantation Leaderboard this month. Keep going to maintain your lead!</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:100%;"></div></div>
+    </div>
+    <div style="background:var(--surface-2);border-radius:var(--r-sm);padding:12px;font-size:11px;color:var(--text-muted);line-height:1.5;" class="anim anim-3">
+      Rankings measure reported quantities with monitoring quality and verification shown separately. Survival rates are not shown without sufficient verified historical data.
+    </div>
+  </main>
+  <nav class="bottom-nav">
+    <a href="./home_dashboard.html" class="nav-item"><span class="material-icons-round">home</span><span class="nav-label">Home</span></a>
+    <a href="./explore_map.html" class="nav-item"><span class="material-icons-round">explore</span><span class="nav-label">Map</span></a>
+    <a href="./create_activity.html" class="nav-fab"><span class="material-icons-round">add</span></a>
+    <a href="./community_hub.html" class="nav-item active"><span class="material-icons-round">group</span><span class="nav-label">Community</span><span class="nav-dot"></span></a>
+    <a href="./user_profile.html" class="nav-item"><span class="material-icons-round">person</span><span class="nav-label">Profile</span></a>
+  </nav>
+</div>
+</body>
+</html>

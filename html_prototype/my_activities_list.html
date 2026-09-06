@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — My Activities</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    .filter-row { display:flex;gap:6px;overflow-x:auto;padding-bottom:4px; }
+    .filter-pill {
+      display:inline-flex;align-items:center;gap:4px;
+      padding:7px 14px; border-radius:999px;
+      font-size:11px; font-weight:700; white-space:nowrap; cursor:pointer;
+      border:1.5px solid var(--card-border); background:var(--card); color:var(--text-2);
+      transition: all var(--dur) var(--ease);
+    }
+    .filter-pill.active { background:var(--ink); border-color:var(--ink); color:var(--lime); }
+    .activity-item {
+      display:flex;align-items:center;gap:12px;padding:14px 16px;
+      border-bottom:1px solid var(--card-border);
+      text-decoration:none; color:inherit;
+      transition: background var(--dur) ease;
+    }
+    .activity-item:active { background:var(--surface); }
+    .activity-item:last-child { border-bottom:none; }
+    .act-icon { width:42px;height:42px;border-radius:14px;flex-shrink:0;display:grid;place-items:center; }
+    .act-icon .material-icons-round { font-size:20px; }
+    .act-info { flex:1; }
+    .act-name { font-size:13px;font-weight:700;color:var(--text-1);letter-spacing:-0.02em; }
+    .act-meta { font-size:11px;color:var(--text-muted);margin-top:2px; }
+    .act-right { display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0; }
+    .act-count { font-size:12px;font-weight:800;color:var(--text-1);letter-spacing:-0.03em; }
+    .empty-state {
+      text-align:center;padding:48px 20px;
+      display:flex;flex-direction:column;align-items:center;gap:12px;
+    }
+    .empty-icon { width:64px;height:64px;border-radius:20px;background:var(--surface-2);display:grid;place-items:center; }
+    .empty-icon .material-icons-round { font-size:30px;color:var(--text-muted); }
+  </style>
+</head>
+<body>
+<div class="app-shell screen">
+
+  <header class="app-header">
+    <a href="./user_profile.html" class="icon-btn">
+      <span class="material-icons-round">arrow_back</span>
+    </a>
+    <h1 class="header-title">My Activities</h1>
+    <a href="./create_activity.html" class="icon-btn" style="background:var(--lime);border-color:var(--lime);color:var(--ink);">
+      <span class="material-icons-round">add</span>
+    </a>
+  </header>
+
+  <main class="p-page" style="display:flex;flex-direction:column;gap:14px;">
+
+    <div class="filter-row anim">
+      <div class="filter-pill active" onclick="filterAct(this,'all')">All</div>
+      <div class="filter-pill" onclick="filterAct(this,'plantation')">
+        <span class="material-icons-round" style="font-size:12px;">forest</span>Plantation
+      </div>
+      <div class="filter-pill" onclick="filterAct(this,'seeding')">
+        <span class="material-icons-round" style="font-size:12px;">grass</span>Seeding
+      </div>
+      <div class="filter-pill" onclick="filterAct(this,'monitored')">
+        <span class="material-icons-round" style="font-size:12px;">visibility</span>Monitored
+      </div>
+    </div>
+
+    <div class="card anim anim-2">
+      <a href="./activity_details.html" class="activity-item">
+        <div class="act-icon" style="background:#EAF9EF;"><span class="material-icons-round" style="color:#1A6636;">forest</span></div>
+        <div class="act-info">
+          <div class="act-name">Chir Pine Reforestation</div>
+          <div class="act-meta">Margalla Zone 1 · 24 Aug</div>
+        </div>
+        <div class="act-right">
+          <div class="act-count">120</div>
+          <span class="badge badge-green" style="font-size:9px;">Verified</span>
+        </div>
+      </a>
+      <a href="./activity_details.html" class="activity-item">
+        <div class="act-icon" style="background:#F3E8FF;"><span class="material-icons-round" style="color:#7A5AF8;">grass</span></div>
+        <div class="act-info">
+          <div class="act-name">G-11 Seed Bombing</div>
+          <div class="act-meta">Sector G-11 · 21 Aug</div>
+        </div>
+        <div class="act-right">
+          <div class="act-count">500</div>
+          <span class="badge badge-neutral" style="font-size:9px;">Reported</span>
+        </div>
+      </a>
+      <a href="./activity_details.html" class="activity-item">
+        <div class="act-icon" style="background:#EAF9EF;"><span class="material-icons-round" style="color:#1A6636;">forest</span></div>
+        <div class="act-info">
+          <div class="act-name">Shakarparian Saplings</div>
+          <div class="act-meta">Shakarparian · 18 Aug</div>
+        </div>
+        <div class="act-right">
+          <div class="act-count">80</div>
+          <span class="badge badge-green" style="font-size:9px;">Monitored</span>
+        </div>
+      </a>
+      <a href="./activity_details.html" class="activity-item">
+        <div class="act-icon" style="background:#E0F4FF;"><span class="material-icons-round" style="color:#0891B2;">visibility</span></div>
+        <div class="act-info">
+          <div class="act-name">Monitoring Visit — Zone 1</div>
+          <div class="act-meta">Margalla Zone 1 · 15 Aug</div>
+        </div>
+        <div class="act-right">
+          <div class="act-count">96</div>
+          <span class="badge badge-neutral" style="font-size:9px;">Observed</span>
+        </div>
+      </a>
+      <a href="./activity_details.html" class="activity-item" style="border-bottom:none;">
+        <div class="act-icon" style="background:#F3E8FF;"><span class="material-icons-round" style="color:#7A5AF8;">grass</span></div>
+        <div class="act-info">
+          <div class="act-name">Rawal Lake Seeding</div>
+          <div class="act-meta">Rawal Buffer · 10 Aug</div>
+        </div>
+        <div class="act-right">
+          <div class="act-count">1,200</div>
+          <span class="badge badge-neutral" style="font-size:9px;">Reported</span>
+        </div>
+      </a>
+    </div>
+
+    <a href="./create_activity.html" class="btn btn-lime anim anim-3">
+      <span class="material-icons-round" style="font-size:18px;">add</span>
+      Log New Activity
+    </a>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="./home_dashboard.html" class="nav-item"><span class="material-icons-round">home</span><span class="nav-label">Home</span></a>
+    <a href="./explore_map.html" class="nav-item"><span class="material-icons-round">explore</span><span class="nav-label">Map</span></a>
+    <a href="./create_activity.html" class="nav-fab"><span class="material-icons-round">add</span></a>
+    <a href="./community_hub.html" class="nav-item"><span class="material-icons-round">group</span><span class="nav-label">Community</span></a>
+    <a href="./user_profile.html" class="nav-item active"><span class="material-icons-round">person</span><span class="nav-label">Profile</span><span class="nav-dot"></span></a>
+  </nav>
+</div>
+<script>
+function filterAct(el, type) {
+  document.querySelectorAll('.filter-pill').forEach(function(p){ p.classList.remove('active'); });
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Activity Details</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    .activity-hero {
+      height: 220px; position: relative; overflow: hidden;
+      border-radius: 0 0 var(--r-xl) var(--r-xl);
+    }
+    .activity-hero img { width:100%;height:100%;object-fit:cover; }
+    .activity-hero::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(180deg,transparent 30%,rgba(15,21,18,0.75));
+    }
+    .hero-meta {
+      position:absolute; bottom:16px; left:16px; right:16px; z-index:2;
+      display:flex; align-items:flex-end; justify-content:space-between;
+    }
+    .hero-title { font-size:18px; font-weight:800; letter-spacing:-0.04em; color:#fff; line-height:1.15; }
+    .hero-site { font-size:11px; color:rgba(255,255,255,0.6); margin-top:3px; }
+    .info-row {
+      display:flex; align-items:center; gap:10px; padding:13px 16px;
+      border-bottom:1px solid var(--card-border);
+    }
+    .info-row:last-child { border-bottom:none; }
+    .info-icon { width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex-shrink:0; }
+    .info-icon .material-icons-round { font-size:17px; }
+    .info-label { font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted); }
+    .info-value { font-size:13px;font-weight:700;color:var(--text-1);margin-top:1px; }
+    .survival-note {
+      padding:14px; background:var(--surface-2); border-radius:var(--r-sm);
+      font-size:11px; color:var(--text-3); line-height:1.6;
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell screen">
+
+  <header class="app-header" style="position:absolute;background:transparent;border-bottom:none;">
+    <a href="./my_activities_list.html" class="icon-btn" style="background:rgba(255,255,255,0.88);">
+      <span class="material-icons-round">arrow_back</span>
+    </a>
+    <div></div>
+    <div style="display:flex;gap:7px;">
+      <a href="./activity_map_details.html" class="icon-btn" style="background:rgba(255,255,255,0.88);">
+        <span class="material-icons-round">map</span>
+      </a>
+      <a href="./notifications.html" class="icon-btn" style="background:rgba(255,255,255,0.88);">
+        <span class="material-icons-round">notifications</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero image -->
+  <div class="activity-hero">
+    <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80" alt="Activity"/>
+    <div class="hero-meta">
+      <div>
+        <div class="hero-title">Chir Pine<br>Reforestation</div>
+        <div class="hero-site">Margalla Hills Zone 1</div>
+      </div>
+      <span class="badge badge-green" style="flex-shrink:0;">Verified</span>
+    </div>
+  </div>
+
+  <main class="p-page" style="display:flex;flex-direction:column;gap:14px;margin-top:8px;">
+
+    <!-- Info card -->
+    <div class="card anim">
+      <div class="info-row">
+        <div class="info-icon" style="background:#EAF9EF;"><span class="material-icons-round" style="color:#1A6636;">forest</span></div>
+        <div>
+          <div class="info-label">Activity Type</div>
+          <div class="info-value">Tree Plantation</div>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon" style="background:rgba(200,255,85,0.10);"><span class="material-icons-round" style="color:#3B5C22;">park</span></div>
+        <div>
+          <div class="info-label">Species</div>
+          <div class="info-value">Pinus Roxburghii (Chir Pine)</div>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon" style="background:#E0F4FF;"><span class="material-icons-round" style="color:#0891B2;">tag</span></div>
+        <div>
+          <div class="info-label">Quantity Planted</div>
+          <div class="info-value">120 Saplings</div>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon" style="background:var(--surface-2);"><span class="material-icons-round" style="color:var(--text-3);">calendar_today</span></div>
+        <div>
+          <div class="info-label">Activity Date</div>
+          <div class="info-value">24 Aug 2026</div>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon" style="background:var(--surface-2);"><span class="material-icons-round" style="color:var(--text-3);">person</span></div>
+        <div>
+          <div class="info-label">Logged By</div>
+          <div class="info-value">Ebad Mahar</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status timeline -->
+    <div class="anim anim-2">
+      <div class="section-title" style="margin-bottom:14px;">Activity Status</div>
+      <div>
+        <div class="status-step">
+          <div class="status-dot done"><span class="material-icons-round" style="font-size:14px;">check</span></div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text-1);">Reported</div>
+            <div style="font-size:11px;color:var(--text-muted);">24 Aug 2026</div>
+          </div>
+        </div>
+        <div class="status-step">
+          <div class="status-dot done"><span class="material-icons-round" style="font-size:14px;">check</span></div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text-1);">Evidence Provided</div>
+            <div style="font-size:11px;color:var(--text-muted);">3 photos uploaded</div>
+          </div>
+        </div>
+        <div class="status-step">
+          <div class="status-dot active"><span class="material-icons-round" style="font-size:14px;">verified</span></div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text-1);">Verified</div>
+            <div style="font-size:11px;color:var(--text-muted);">Community verified</div>
+          </div>
+        </div>
+        <div class="status-step" style="margin-bottom:0;">
+          <div class="status-dot pending"><span class="material-icons-round" style="font-size:14px;">visibility</span></div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text-muted);">Monitored</div>
+            <div style="font-size:11px;color:var(--text-muted);">Pending first observation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Survival estimate -->
+    <div class="survival-note anim anim-3">
+      <strong>Outcome estimate:</strong> Insufficient historical data to calculate survival rate. Return after monitoring to track real outcomes. This platform does not estimate survival without verified data.
+    </div>
+
+    <!-- Actions -->
+    <div class="anim anim-4" style="display:flex;flex-direction:column;gap:8px;">
+      <a href="./plantation_monitoring.html" class="btn btn-lime">
+        <span class="material-icons-round" style="font-size:18px;">visibility</span>
+        Add Monitoring Record
+      </a>
+      <a href="./activity_map_details.html" class="btn btn-ghost">
+        <span class="material-icons-round" style="font-size:18px;">map</span>
+        View on Map
+      </a>
+    </div>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="./home_dashboard.html" class="nav-item"><span class="material-icons-round">home</span><span class="nav-label">Home</span></a>
+    <a href="./explore_map.html" class="nav-item"><span class="material-icons-round">explore</span><span class="nav-label">Map</span></a>
+    <a href="./create_activity.html" class="nav-fab"><span class="material-icons-round">add</span></a>
+    <a href="./community_hub.html" class="nav-item"><span class="material-icons-round">group</span><span class="nav-label">Community</span></a>
+    <a href="./user_profile.html" class="nav-item"><span class="material-icons-round">person</span><span class="nav-label">Profile</span></a>
+  </nav>
+</div>
+</body>
+</html>

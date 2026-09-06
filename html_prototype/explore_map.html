@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Explore Map</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    body { overflow: hidden; }
+    .map-full {
+      position: fixed; inset: 0; z-index: 0;
+    }
+    .map-overlay-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      max-width: 430px; margin: 0 auto;
+      padding: 12px 16px;
+      background: rgba(244,247,240,0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--card-border);
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .map-title {
+      font-size: 14px; font-weight: 800; letter-spacing: -0.04em; color: var(--text-1);
+    }
+    .filter-chips {
+      display: flex; gap: 6px; overflow-x: auto; padding: 10px 16px;
+    }
+    .filter-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 7px 12px; border-radius: 999px;
+      font-size: 11px; font-weight: 700; white-space: nowrap;
+      cursor: pointer; transition: all var(--dur) var(--ease);
+      border: 1.5px solid var(--card-border); background: rgba(255,255,255,0.90);
+      color: var(--text-2); backdrop-filter: blur(8px);
+    }
+    .filter-chip.active { background: var(--ink); border-color: var(--ink); color: var(--lime); }
+    .filter-chip .material-icons-round { font-size: 13px; }
+    .map-stats-bar {
+      position: fixed; bottom: 88px; left: 10px; right: 10px; z-index: 50;
+      max-width: 410px; margin: 0 auto;
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(18px);
+      border: 1px solid var(--card-border); border-radius: var(--r-lg);
+      padding: 12px 16px;
+      display: grid; grid-template-columns: repeat(3,1fr);
+      box-shadow: var(--shadow-md);
+    }
+    .map-stat { text-align: center; }
+    .map-stat-value { font-size: 16px; font-weight: 800; letter-spacing: -0.04em; color: var(--text-1); }
+    .map-stat-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-top: 2px; }
+    .map-stat:not(:last-child) { border-right: 1px solid var(--card-border); }
+    .locate-btn {
+      position: fixed; right: 16px; bottom: 175px; z-index: 50;
+      width: 44px; height: 44px; border-radius: 14px;
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      display: grid; place-items: center;
+      box-shadow: var(--shadow-md); cursor: pointer;
+      color: var(--text-2);
+    }
+    .locate-btn .material-icons-round { font-size: 20px; }
+  </style>
+</head>
+<body>
+
+  <div class="map-full">
+    <div id="exploreMap" style="width:100%;height:100%;"></div>
+  </div>
+
+  <!-- Header overlay -->
+  <div class="map-overlay-header" style="flex-direction:column;align-items:stretch;gap:8px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="header-mark">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M12 21V13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M12 17C12 17 7 15 6.5 10C6.5 10 9.5 8.5 12 17Z" fill="currentColor"/>
+            <path d="M12 13C12 13 17 11 17.5 6C17.5 6 14.5 4.5 12 13Z" fill="currentColor" opacity="0.55"/>
+          </svg>
+        </div>
+        <span class="map-title">Restoration Map</span>
+      </div>
+      <div style="display:flex;gap:7px;">
+        <a href="./notifications.html" class="icon-btn">
+          <span class="material-icons-round">notifications</span>
+        </a>
+        <a href="./user_profile.html" class="avatar-btn">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80" alt=""/>
+        </a>
+      </div>
+    </div>
+    <div class="filter-chips">
+      <div class="filter-chip active" onclick="toggleFilter(this)">
+        <span class="material-icons-round">forest</span>Plantation
+      </div>
+      <div class="filter-chip" onclick="toggleFilter(this)">
+        <span class="material-icons-round">grass</span>Seeding
+      </div>
+      <div class="filter-chip" onclick="toggleFilter(this)">
+        <span class="material-icons-round">visibility</span>Monitored
+      </div>
+      <div class="filter-chip" onclick="toggleFilter(this)">
+        <span class="material-icons-round">verified</span>Verified
+      </div>
+    </div>
+  </div>
+
+  <!-- Locate button -->
+  <div class="locate-btn" id="locateBtn">
+    <span class="material-icons-round">my_location</span>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="map-stats-bar">
+    <div class="map-stat">
+      <div class="map-stat-value">14.3K</div>
+      <div class="map-stat-label">Planted</div>
+    </div>
+    <div class="map-stat">
+      <div class="map-stat-value">3</div>
+      <div class="map-stat-label">Active Sites</div>
+    </div>
+    <div class="map-stat">
+      <div class="map-stat-value">96.8%</div>
+      <div class="map-stat-label">Survival Rate</div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="./home_dashboard.html" class="nav-item">
+      <span class="material-icons-round">home</span>
+      <span class="nav-label">Home</span>
+    </a>
+    <a href="./explore_map.html" class="nav-item active">
+      <span class="material-icons-round">explore</span>
+      <span class="nav-label">Map</span>
+      <span class="nav-dot"></span>
+    </a>
+    <a href="./create_activity.html" class="nav-fab">
+      <span class="material-icons-round">add</span>
+    </a>
+    <a href="./community_hub.html" class="nav-item">
+      <span class="material-icons-round">group</span>
+      <span class="nav-label">Community</span>
+    </a>
+    <a href="./user_profile.html" class="nav-item">
+      <span class="material-icons-round">person</span>
+      <span class="nav-label">Profile</span>
+    </a>
+  </nav>
+
+<script>
+function toggleFilter(el) { el.classList.toggle('active'); }
+
+document.addEventListener('DOMContentLoaded', function() {
+  var map = L.map('exploreMap', { zoomControl: false, attributionControl: false })
+    .setView([33.7294, 73.0931], 13);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 }).addTo(map);
+
+  function makeDot(color) {
+    return L.divIcon({
+      className: '',
+      html: '<div style="width:14px;height:14px;border-radius:50%;background:' + color + ';border:2.5px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.35);"></div>',
+      iconSize: [14,14], iconAnchor: [7,7]
+    });
+  }
+
+  var sites = [
+    { lat:33.7380, lng:73.0650, name:'Margalla Reforestation', info:'5,400 Saplings', color:'#C8FF55' },
+    { lat:33.6930, lng:73.0680, name:'Shakarparian Site',      info:'3,200 Saplings', color:'#C8FF55' },
+    { lat:33.7020, lng:73.1250, name:'Rawal Lake Buffer',      info:'1,850 Plants',   color:'#7A5AF8' },
+    { lat:33.7180, lng:73.0520, name:'F-10 Margalla Trail',    info:'680 Saplings',   color:'#C8FF55' }
+  ];
+
+  sites.forEach(function(s) {
+    L.marker([s.lat, s.lng], {icon: makeDot(s.color)}).addTo(map)
+      .bindPopup('<b style="font-family:Plus Jakarta Sans,sans-serif;">' + s.name + '</b><br><span style="font-size:11px;color:#6B8A68;">' + s.info + '</span>');
+  });
+
+  var savedLogs = JSON.parse(localStorage.getItem('userRestorationLogs') || '[]');
+  savedLogs.forEach(function(item) {
+    if (item.lat && item.lng) {
+      L.marker([item.lat, item.lng], {
+        icon: L.divIcon({
+          className: 'user-placed-pin',
+          html: '<span class="material-icons-round" style="font-size:15px;">eco</span>',
+          iconSize:[36,36], iconAnchor:[18,18]
+        })
+      }).addTo(map).bindPopup('<b>' + item.title + '</b><br>+' + item.count);
+    }
+  });
+
+  document.getElementById('locateBtn').addEventListener('click', function() {
+    navigator.geolocation && navigator.geolocation.getCurrentPosition(function(pos) {
+      map.setView([pos.coords.latitude, pos.coords.longitude], 15);
+    });
+  });
+});
+</script>
+</body>
+</html>

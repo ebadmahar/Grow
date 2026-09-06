@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Your Interests</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    .interest-shell {
+      width: 100%; max-width: 430px; min-height: 100dvh;
+      margin: 0 auto; padding: 52px 20px 32px;
+      display: flex; flex-direction: column; gap: 28px;
+      background: var(--surface);
+    }
+    .back-btn {
+      position: absolute; top: 16px; left: 16px;
+      width: 36px; height: 36px; border-radius: var(--r-sm);
+      background: var(--card); border: 1px solid var(--card-border);
+      display: grid; place-items: center; color: var(--text-2);
+    }
+    .interest-area {
+      background: var(--card); border: 1px solid var(--card-border);
+      border-radius: var(--r-xl); padding: 20px;
+      display: flex; flex-direction: column; gap: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .area-label {
+      font-size: 11px; font-weight: 800; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-3);
+    }
+    .selected-count {
+      font-size: 12px; font-weight: 700; color: var(--text-muted);
+    }
+    .selected-count span { color: var(--text-1); }
+  </style>
+</head>
+<body style="background:var(--surface);">
+  <a href="./register_screen.html" class="back-btn">
+    <span class="material-icons-round" style="font-size:18px;">arrow_back</span>
+  </a>
+
+  <div class="interest-shell">
+    <div class="anim" style="display:flex;flex-direction:column;gap:12px;">
+      <div class="entry-mark">
+        <span class="material-icons-round" style="font-size:22px;">interests</span>
+      </div>
+      <span class="entry-kicker">Personalise</span>
+      <h1 class="entry-h1">What do<br>you restore?</h1>
+      <p class="entry-sub">Pick everything that fits your field work. You can change this later.</p>
+    </div>
+
+    <div class="interest-area anim anim-2">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span class="area-label">Activity Types</span>
+        <span class="selected-count" id="selectedCount"><span>0</span> selected</span>
+      </div>
+      <div class="tag-grid" id="tagGrid">
+        <div class="tag-pill" data-tag="tree-plantation">Tree Plantation</div>
+        <div class="tag-pill" data-tag="seed-bombing">Seed Bombing</div>
+        <div class="tag-pill" data-tag="monitoring">Monitoring</div>
+        <div class="tag-pill" data-tag="mangroves">Mangroves</div>
+        <div class="tag-pill" data-tag="reforestation">Reforestation</div>
+        <div class="tag-pill" data-tag="native-species">Native Species</div>
+        <div class="tag-pill" data-tag="wetlands">Wetlands</div>
+        <div class="tag-pill" data-tag="urban-greening">Urban Greening</div>
+        <div class="tag-pill" data-tag="community-tasks">Community Tasks</div>
+        <div class="tag-pill" data-tag="data-collection">Data Collection</div>
+      </div>
+    </div>
+
+    <a href="./profile_setup.html" class="btn btn-primary anim anim-3" id="continueBtn">Continue</a>
+  </div>
+
+  <script>
+    var pills = document.querySelectorAll('.tag-pill');
+    var count = 0;
+    pills.forEach(function(pill) {
+      pill.addEventListener('click', function() {
+        this.classList.toggle('selected');
+        count = document.querySelectorAll('.tag-pill.selected').length;
+        document.querySelector('#selectedCount span').textContent = count;
+      });
+    });
+  </script>
+</body>
+</html>

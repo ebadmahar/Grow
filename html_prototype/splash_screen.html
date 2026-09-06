@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Restoration in the Field</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    body { background: var(--ink); }
+    .splash-screen { position: relative; overflow: hidden; }
+    .splash-screen::before {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,255,85,0.08) 0%, transparent 70%);
+      top: -80px; right: -80px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="splash-screen">
+    <div class="splash-mark">
+      <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 38V20" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        <path d="M22 28C22 28 12 25 11 16C11 16 16.5 13 22 28Z" fill="currentColor"/>
+        <path d="M22 22C22 22 32 19 33 10C33 10 27.5 7 22 22Z" fill="currentColor" opacity="0.55"/>
+      </svg>
+    </div>
+    <div class="splash-name">Grōv</div>
+    <div class="splash-tagline">Restoration in the field</div>
+    <div class="splash-loader">
+      <div class="splash-loader-fill"></div>
+    </div>
+  </div>
+  <script>setTimeout(()=>{ window.location.href='./welcome_screen.html'; }, 2200);</script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Leaderboard</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    .board-hero {
+      background: var(--ink); padding: 24px 20px 20px;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      position: relative; overflow: hidden;
+    }
+    .board-hero::before {
+      content:''; position:absolute; top:-50px; right:-50px;
+      width:220px; height:220px; border-radius:50%;
+      background: radial-gradient(circle,rgba(200,255,85,0.12) 0%,transparent 70%);
+    }
+    .board-icon { font-size:36px; color:var(--lime); }
+    .board-title { font-size:22px;font-weight:800;letter-spacing:-0.05em;color:#fff; }
+    .board-sub { font-size:11px;color:rgba(255,255,255,0.4); }
+    .tab-row {
+      display:flex;gap:6px;background:var(--surface-2);
+      border-radius:var(--r-lg);padding:4px;
+    }
+    .tab-btn {
+      flex:1;text-align:center;padding:8px;
+      border-radius:var(--r-md);font-size:12px;font-weight:700;
+      color:var(--text-3);cursor:pointer;transition:all var(--dur) var(--ease);
+    }
+    .tab-btn.active { background:var(--ink); color:var(--lime); }
+    .rank-row { display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--card-border); }
+    .rank-row:last-child { border-bottom:none; }
+    .rank-num { width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font-size:11px;font-weight:800;flex-shrink:0; }
+    .rank-avatar { width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0; }
+    .rank-avatar img { width:100%;height:100%;object-fit:cover; }
+    .rank-info { flex:1; }
+    .rank-name { font-size:13px;font-weight:700;color:var(--text-1);letter-spacing:-0.02em; }
+    .rank-meta { font-size:11px;color:var(--text-muted);margin-top:1px; }
+    .rank-pts { font-size:13px;font-weight:800;color:var(--text-1);letter-spacing:-0.03em;flex-shrink:0; }
+    .own-rank-banner {
+      background:rgba(200,255,85,0.10);border:1px solid rgba(200,255,85,0.30);
+      border-radius:var(--r-md);padding:14px 16px;
+      display:flex;align-items:center;gap:12px;
+    }
+    .own-rank-pos { font-size:24px;font-weight:800;letter-spacing:-0.06em;color:var(--ink); }
+  </style>
+</head>
+<body>
+<div class="app-shell" style="padding-bottom:90px;">
+
+  <header class="app-header">
+    <a href="./community_hub.html" class="icon-btn">
+      <span class="material-icons-round">arrow_back</span>
+    </a>
+    <h1 class="header-title">Leaderboard</h1>
+    <a href="./my_ranking.html" class="icon-btn" style="background:var(--lime);border-color:var(--lime);color:var(--ink);">
+      <span class="material-icons-round">emoji_events</span>
+    </a>
+  </header>
+
+  <div class="board-hero">
+    <span class="material-icons-round board-icon">emoji_events</span>
+    <div class="board-title">Top Restorers</div>
+    <div class="board-sub">August 2026 · Islamabad Region</div>
+  </div>
+
+  <main class="p-page" style="display:flex;flex-direction:column;gap:12px;">
+
+    <div class="tab-row anim">
+      <div class="tab-btn active" onclick="switchTab(this)">Plantation</div>
+      <div class="tab-btn" onclick="switchTab(this)">Seeding</div>
+      <div class="tab-btn" onclick="switchTab(this)">Community</div>
+    </div>
+
+    <!-- Your rank -->
+    <div class="own-rank-banner anim anim-2">
+      <div class="own-rank-pos">#1</div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:800;color:var(--text-1);">You are leading!</div>
+        <div style="font-size:11px;color:var(--text-3);">14,280 Trees · 9,850 pts this month</div>
+      </div>
+      <a href="./my_ranking.html" style="font-size:11px;font-weight:700;color:var(--text-2);display:flex;align-items:center;gap:2px;">
+        Details<span class="material-icons-round" style="font-size:14px;">chevron_right</span>
+      </a>
+    </div>
+
+    <div class="card anim anim-3">
+      <div class="rank-row">
+        <div class="rank-num rank-1">1</div>
+        <div class="rank-avatar"><img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80" alt=""/></div>
+        <div class="rank-info">
+          <div class="rank-name">Ebad Mahar <span style="color:var(--text-muted);font-weight:500;font-size:11px;">(You)</span></div>
+          <div class="rank-meta">14,280 Trees · 32 activities</div>
+        </div>
+        <div class="rank-pts">9,850</div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-num rank-2">2</div>
+        <div class="rank-avatar" style="background:var(--surface-2);display:grid;place-items:center;"><span class="material-icons-round" style="font-size:18px;color:var(--text-muted);">person</span></div>
+        <div class="rank-info">
+          <div class="rank-name">Sara Khan</div>
+          <div class="rank-meta">11,200 Trees · 24 activities</div>
+        </div>
+        <div class="rank-pts">8,200</div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-num rank-3">3</div>
+        <div class="rank-avatar" style="background:var(--surface-2);display:grid;place-items:center;"><span class="material-icons-round" style="font-size:18px;color:var(--text-muted);">person</span></div>
+        <div class="rank-info">
+          <div class="rank-name">Ali Raza</div>
+          <div class="rank-meta">9,800 Trees · 21 activities</div>
+        </div>
+        <div class="rank-pts">7,100</div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-num rank-other">4</div>
+        <div class="rank-avatar" style="background:var(--surface-2);display:grid;place-items:center;"><span class="material-icons-round" style="font-size:18px;color:var(--text-muted);">person</span></div>
+        <div class="rank-info">
+          <div class="rank-name">Fatima Malik</div>
+          <div class="rank-meta">7,600 Trees · 18 activities</div>
+        </div>
+        <div class="rank-pts">5,900</div>
+      </div>
+      <div class="rank-row" style="border-bottom:none;">
+        <div class="rank-num rank-other">5</div>
+        <div class="rank-avatar" style="background:var(--surface-2);display:grid;place-items:center;"><span class="material-icons-round" style="font-size:18px;color:var(--text-muted);">person</span></div>
+        <div class="rank-info">
+          <div class="rank-name">Zain ul Abideen</div>
+          <div class="rank-meta">6,100 Trees · 14 activities</div>
+        </div>
+        <div class="rank-pts">4,700</div>
+      </div>
+    </div>
+
+    <div class="anim anim-4" style="font-size:11px;color:var(--text-muted);text-align:center;line-height:1.5;padding:4px 0;">
+      Rankings measure reported quantities with monitoring quality shown separately. A survival leaderboard will be added after sufficient monitoring data exists.
+    </div>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="./home_dashboard.html" class="nav-item"><span class="material-icons-round">home</span><span class="nav-label">Home</span></a>
+    <a href="./explore_map.html" class="nav-item"><span class="material-icons-round">explore</span><span class="nav-label">Map</span></a>
+    <a href="./create_activity.html" class="nav-fab"><span class="material-icons-round">add</span></a>
+    <a href="./community_hub.html" class="nav-item active"><span class="material-icons-round">group</span><span class="nav-label">Community</span><span class="nav-dot"></span></a>
+    <a href="./user_profile.html" class="nav-item"><span class="material-icons-round">person</span><span class="nav-label">Profile</span></a>
+  </nav>
+</div>
+<script>
+function switchTab(el) {
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Create Task</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    .form-card { background:var(--card);border:1px solid var(--card-border);border-radius:var(--r-xl);padding:20px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow-sm); }
+    .media-upload { height:100px;border:1.5px dashed var(--card-border);border-radius:var(--r-md);background:var(--surface);display:grid;place-items:center;cursor:pointer; }
+    .upload-inner { display:flex;flex-direction:column;align-items:center;gap:5px; }
+    .upload-inner .material-icons-round { font-size:24px;color:var(--text-muted); }
+  </style>
+</head>
+<body>
+<div class="app-shell screen">
+  <header class="app-header">
+    <a href="./community_hub.html" class="icon-btn"><span class="material-icons-round">arrow_back</span></a>
+    <h1 class="header-title">Create Task</h1>
+    <a href="./notifications.html" class="icon-btn"><span class="material-icons-round">notifications</span></a>
+  </header>
+  <main class="p-page" style="display:flex;flex-direction:column;gap:14px;">
+    <div class="anim" style="display:flex;flex-direction:column;gap:4px;">
+      <div style="font-size:20px;font-weight:800;letter-spacing:-0.05em;color:var(--text-1);">Organise community<br>field work.</div>
+      <p style="font-size:13px;color:var(--text-3);">Create a task, set a date, and invite volunteers to join.</p>
+    </div>
+    <form action="./community_task_details.html" class="form-card anim anim-2">
+      <div class="form-group">
+        <label class="form-label">Task Title</label>
+        <input type="text" class="form-input" placeholder="e.g. Margalla Trail Plantation" value="Margalla Trail Plantation"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Activity Type</label>
+        <select class="form-input form-select">
+          <option>Tree Plantation</option>
+          <option>Seed Bombing</option>
+          <option>Monitoring Visit</option>
+          <option>Site Survey</option>
+          <option>Mixed Activities</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Location / Site</label>
+        <input type="text" class="form-input" placeholder="Meeting point or site name" value="Margalla Hills Trail 3 Entrance"/>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-input" id="taskDate"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Start Time</label>
+          <input type="time" class="form-input" value="07:00"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Max Volunteers</label>
+        <input type="number" class="form-input" placeholder="Leave blank for unlimited" value="30"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-input form-textarea" placeholder="Tell volunteers what to bring, how to prepare, what you'll accomplish...">Join us for a community tree plantation drive. Saplings and tools provided. Bring water and wear comfortable clothes suitable for field work.</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Cover Image (optional)</label>
+        <div class="media-upload" id="mu"><div class="upload-inner"><span class="material-icons-round">add_photo_alternate</span><span style="font-size:11px;font-weight:600;color:var(--text-3);">Upload Cover Photo</span></div></div>
+        <input type="file" id="mi" accept="image/*" style="display:none;"/>
+      </div>
+      <button type="submit" class="btn btn-lime" style="margin-top:4px;">
+        <span class="material-icons-round" style="font-size:18px;">group_add</span>
+        Publish Task
+      </button>
+    </form>
+  </main>
+  <nav class="bottom-nav">
+    <a href="./home_dashboard.html" class="nav-item"><span class="material-icons-round">home</span><span class="nav-label">Home</span></a>
+    <a href="./explore_map.html" class="nav-item"><span class="material-icons-round">explore</span><span class="nav-label">Map</span></a>
+    <a href="./create_activity.html" class="nav-fab"><span class="material-icons-round">add</span></a>
+    <a href="./community_hub.html" class="nav-item active"><span class="material-icons-round">group</span><span class="nav-label">Community</span><span class="nav-dot"></span></a>
+    <a href="./user_profile.html" class="nav-item"><span class="material-icons-round">person</span><span class="nav-label">Profile</span></a>
+  </nav>
+</div>
+<script>document.getElementById('taskDate').valueAsDate=new Date();document.getElementById('mu').addEventListener('click',function(){document.getElementById('mi').click();});</script>
+</body>
+</html>

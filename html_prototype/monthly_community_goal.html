@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Monthly Goal</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    .goal-hero { background:var(--ink);padding:28px 20px 24px;position:relative;overflow:hidden; }
+    .goal-hero::before { content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(200,255,85,0.12) 0%,transparent 70%); }
+    .goal-pct { font-size:52px;font-weight:800;letter-spacing:-0.07em;color:var(--lime);line-height:1; }
+    .goal-period { font-size:10px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:rgba(255,255,255,0.40);margin-bottom:8px; }
+    .goal-title { font-size:18px;font-weight:800;letter-spacing:-0.04em;color:#fff;margin-bottom:4px; }
+    .goal-prog { height:8px;background:rgba(255,255,255,0.12);border-radius:999px;overflow:hidden;margin-top:12px; }
+    .goal-prog-fill { height:100%;background:var(--lime);border-radius:999px; }
+    .goal-numbers { display:flex;align-items:center;justify-content:space-between;margin-top:8px; }
+    .goal-count { font-size:13px;font-weight:700;color:rgba(255,255,255,0.55); }
+    .goal-target { font-size:13px;font-weight:700;color:rgba(255,255,255,0.35); }
+    .sub-goal-row { display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--card-border); }
+    .sub-goal-row:last-child { border-bottom:none; }
+    .sub-goal-icon { width:38px;height:38px;border-radius:12px;flex-shrink:0;display:grid;place-items:center; }
+    .sub-goal-icon .material-icons-round { font-size:18px; }
+    .sub-goal-info { flex:1; }
+    .sub-goal-name { font-size:13px;font-weight:700;color:var(--text-1); }
+    .sub-goal-prog { margin-top:5px;height:4px;background:var(--surface-2);border-radius:999px;overflow:hidden; }
+    .sub-goal-fill { height:100%;border-radius:999px; }
+    .sub-goal-pct { font-size:12px;font-weight:800;color:var(--text-1); }
+  </style>
+</head>
+<body>
+<div class="app-shell" style="padding-bottom:90px;">
+  <header class="app-header" style="background:rgba(15,21,18,0.94);border-color:rgba(255,255,255,0.08);">
+    <a href="./community_hub.html" class="icon-btn" style="background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.10);color:#fff;"><span class="material-icons-round">arrow_back</span></a>
+    <h1 class="header-title" style="color:#fff;">Monthly Goal</h1>
+    <div></div>
+  </header>
+  <div class="goal-hero">
+    <div class="goal-period">August 2026</div>
+    <div class="goal-title">Community Planting Goal</div>
+    <div class="goal-pct">74.5%</div>
+    <div class="goal-prog"><div class="goal-prog-fill" style="width:74.5%;"></div></div>
+    <div class="goal-numbers">
+      <span class="goal-count">74,500 Trees</span>
+      <span class="goal-target">Goal: 100,000</span>
+    </div>
+  </div>
+  <main class="p-page" style="display:flex;flex-direction:column;gap:14px;margin-top:8px;">
+    <div class="anim">
+      <div class="section-header"><span class="section-title">Goal Breakdown</span></div>
+      <div class="card">
+        <div class="sub-goal-row">
+          <div class="sub-goal-icon" style="background:#EAF9EF;"><span class="material-icons-round" style="color:#1A6636;">forest</span></div>
+          <div class="sub-goal-info">
+            <div class="sub-goal-name">Trees Planted</div>
+            <div class="sub-goal-prog"><div class="sub-goal-fill" style="width:82%;background:var(--lime);"></div></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">41,000 / 50,000</div>
+          </div>
+          <div class="sub-goal-pct">82%</div>
+        </div>
+        <div class="sub-goal-row">
+          <div class="sub-goal-icon" style="background:#F3E8FF;"><span class="material-icons-round" style="color:#7A5AF8;">grass</span></div>
+          <div class="sub-goal-info">
+            <div class="sub-goal-name">Seeds Dispersed</div>
+            <div class="sub-goal-prog"><div class="sub-goal-fill" style="width:69%;background:#C8B5FF;"></div></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">34,500 / 50,000</div>
+          </div>
+          <div class="sub-goal-pct">69%</div>
+        </div>
+        <div class="sub-goal-row">
+          <div class="sub-goal-icon" style="background:#E0F4FF;"><span class="material-icons-round" style="color:#0891B2;">visibility</span></div>
+          <div class="sub-goal-info">
+            <div class="sub-goal-name">Monitoring Records</div>
+            <div class="sub-goal-prog"><div class="sub-goal-fill" style="width:55%;background:#7DD3F8;"></div></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">110 / 200</div>
+          </div>
+          <div class="sub-goal-pct">55%</div>
+        </div>
+        <div class="sub-goal-row" style="border-bottom:none;">
+          <div class="sub-goal-icon" style="background:var(--surface-2);"><span class="material-icons-round" style="color:var(--text-3);">group</span></div>
+          <div class="sub-goal-info">
+            <div class="sub-goal-name">Active Participants</div>
+            <div class="sub-goal-prog"><div class="sub-goal-fill" style="width:91%;background:#A3E635;"></div></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">182 / 200</div>
+          </div>
+          <div class="sub-goal-pct">91%</div>
+        </div>
+      </div>
+    </div>
+    <a href="./plantation_activity_form.html" class="btn btn-lime anim anim-2">
+      <span class="material-icons-round" style="font-size:18px;">forest</span>
+      Contribute to Goal
+    </a>
+  </main>
+  <nav class="bottom-nav">
+    <a href="./home_dashboard.html" class="nav-item"><span class="material-icons-round">home</span><span class="nav-label">Home</span></a>
+    <a href="./explore_map.html" class="nav-item"><span class="material-icons-round">explore</span><span class="nav-label">Map</span></a>
+    <a href="./create_activity.html" class="nav-fab"><span class="material-icons-round">add</span></a>
+    <a href="./community_hub.html" class="nav-item active"><span class="material-icons-round">group</span><span class="nav-label">Community</span><span class="nav-dot"></span></a>
+    <a href="./user_profile.html" class="nav-item"><span class="material-icons-round">person</span><span class="nav-label">Profile</span></a>
+  </nav>
+</div>
+</body>
+</html>

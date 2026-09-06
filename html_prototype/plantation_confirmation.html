@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Plantation Logged</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    body { background: var(--surface); }
+    .confirm-shell {
+      width: 100%; max-width: 430px; min-height: 100dvh;
+      margin: 0 auto; padding: 48px 20px 40px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 24px; text-align: center;
+    }
+    .success-ring {
+      width: 100px; height: 100px; border-radius: 50%;
+      background: rgba(200,255,85,0.10); border: 2px solid rgba(200,255,85,0.30);
+      display: grid; place-items: center;
+      animation: ring-pulse 0.6s var(--ease) both;
+    }
+    .success-inner {
+      width: 74px; height: 74px; border-radius: 50%;
+      background: var(--ink); display: grid; place-items: center; color: var(--lime);
+    }
+    .success-inner .material-icons-round { font-size: 36px; }
+    @keyframes ring-pulse {
+      from { transform: scale(0.7); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    .confirm-heading {
+      font-size: 28px; font-weight: 800; letter-spacing: -0.06em; color: var(--text-1); line-height: 1.1;
+    }
+    .confirm-sub { font-size: 14px; color: var(--text-3); line-height: 1.6; max-width: 28ch; }
+    .data-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--card); border: 1px solid var(--card-border);
+      border-radius: 999px; padding: 8px 16px;
+      font-size: 13px; font-weight: 700; color: var(--text-1);
+    }
+    .data-pill .material-icons-round { font-size: 16px; color: #1A6636; }
+    .next-actions { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+    .status-note {
+      font-size: 11px; color: var(--text-muted); line-height: 1.5;
+      background: var(--surface-2); border-radius: var(--r-sm); padding: 12px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+<div class="confirm-shell">
+  <div class="success-ring anim">
+    <div class="success-inner">
+      <span class="material-icons-round">forest</span>
+    </div>
+  </div>
+
+  <div class="anim anim-2" style="display:flex;flex-direction:column;gap:10px;align-items:center;">
+    <h1 class="confirm-heading">Plantation<br>Logged.</h1>
+    <p class="confirm-sub">Your activity has been recorded and pinned to the restoration map.</p>
+  </div>
+
+  <div class="anim anim-3" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+    <div class="data-pill">
+      <span class="material-icons-round">park</span>
+      120 Saplings
+    </div>
+    <div class="data-pill">
+      <span class="material-icons-round" style="color:#0891B2;">location_on</span>
+      Margalla Sector 3
+    </div>
+  </div>
+
+  <p class="status-note anim anim-3">
+    Status: <strong>Reported</strong> — your activity needs evidence review before it becomes Verified. Add more photos or wait for a community monitor.
+  </p>
+
+  <div class="next-actions anim anim-4">
+    <a href="./plantation_monitoring.html" class="btn btn-primary">
+      <span class="material-icons-round" style="font-size:18px;">visibility</span>
+      Schedule a Monitoring Visit
+    </a>
+    <a href="./home_dashboard.html" class="btn btn-ghost">Back to Home</a>
+  </div>
+</div>
+</body>
+</html>

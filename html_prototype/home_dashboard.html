@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Home</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    .hero-stat-card {
+      background: var(--ink);
+      border-radius: var(--r-xl);
+      padding: 20px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-stat-card::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,255,85,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-location {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: rgba(255,255,255,0.55);
+      margin-bottom: 4px;
+    }
+    .hero-location .material-icons-round { font-size: 12px; color: var(--lime); }
+    .hero-title {
+      font-size: 18px; font-weight: 800; letter-spacing: -0.045em;
+      color: #fff; line-height: 1.15; margin-bottom: 4px;
+    }
+    .hero-sub {
+      font-size: 11px; color: rgba(255,255,255,0.5); line-height: 1.5; margin-bottom: 16px;
+    }
+    .hero-stats {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 8px; padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.10);
+    }
+    .hero-stat-cell { text-align: center; }
+    .hero-stat-value {
+      font-size: 18px; font-weight: 800; letter-spacing: -0.05em;
+      color: var(--lime); line-height: 1; margin-bottom: 3px;
+    }
+    .hero-stat-label {
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.07em; color: rgba(255,255,255,0.4);
+    }
+    .aqi-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.10); border-radius: 999px;
+      padding: 4px 10px; font-size: 10px; font-weight: 700;
+      color: rgba(255,255,255,0.75);
+    }
+    .aqi-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ADE80; }
+    .chips-row {
+      display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;
+    }
+    .activity-row {
+      display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .activity-row:last-child { border-bottom: none; }
+    .activity-icon {
+      width: 40px; height: 40px; border-radius: 13px; flex-shrink: 0;
+      display: grid; place-items: center;
+    }
+    .activity-icon .material-icons-round { font-size: 20px; }
+    .activity-info { flex: 1; min-width: 0; }
+    .activity-name { font-size: 13px; font-weight: 700; color: var(--text-1); letter-spacing: -0.02em; }
+    .activity-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  </style>
+</head>
+<body>
+<div class="app-shell screen">
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="header-mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M12 21V13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M12 17C12 17 7 15 6.5 10C6.5 10 9.5 8.5 12 17Z" fill="currentColor"/>
+          <path d="M12 13C12 13 17 11 17.5 6C17.5 6 14.5 4.5 12 13Z" fill="currentColor" opacity="0.55"/>
+        </svg>
+      </div>
+      <div>
+        <div class="header-name">Grōv</div>
+        <div class="header-sub">Islamabad, Pakistan</div>
+      </div>
+    </div>
+    <h1 class="header-title">Home</h1>
+    <div class="header-actions">
+      <a href="./notifications.html" class="icon-btn" id="header-notif-btn">
+        <span class="material-icons-round">notifications</span>
+      </a>
+      <a href="./user_profile.html" class="avatar-btn">
+        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80" alt="Avatar"/>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="p-page" style="display:flex;flex-direction:column;gap:16px;">
+
+    <!-- Hero stat card -->
+    <div class="hero-stat-card anim">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="hero-location">
+          <span class="material-icons-round">location_on</span>
+          Margalla Hills Zone
+        </div>
+        <div class="aqi-badge">
+          <div class="aqi-dot"></div>
+          AQI 42 — Good
+        </div>
+      </div>
+      <div class="hero-title">Community Restoration<br>in Action</div>
+      <div class="hero-sub">14,280 saplings recorded across Islamabad sectors this season.</div>
+      <div class="hero-stats">
+        <div class="hero-stat-cell">
+          <div class="hero-stat-value" id="totalPlantedCount">14,280</div>
+          <div class="hero-stat-label">Planted</div>
+        </div>
+        <div class="hero-stat-cell">
+          <div class="hero-stat-value" id="userPinsCount">4</div>
+          <div class="hero-stat-label">Active Sites</div>
+        </div>
+        <div class="hero-stat-cell">
+          <div class="hero-stat-value">84.5T</div>
+          <div class="hero-stat-label">CO₂ Offset</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="chips-row anim anim-2">
+      <a href="./plantation_activity_form.html" class="action-chip action-chip-primary">
+        <span class="material-icons-round" style="font-size:15px;">forest</span>
+        Log Plantation
+      </a>
+      <a href="./seeding_activity_form.html" class="action-chip action-chip-secondary">
+        <span class="material-icons-round" style="font-size:15px;color:#7A5AF8;">grass</span>
+        Seed Bombing
+      </a>
+      <a href="./report_activity.html" class="action-chip action-chip-secondary">
+        <span class="material-icons-round" style="font-size:15px;color:#E53935;">flag</span>
+        Report Issue
+      </a>
+      <a href="./add_monitoring_record.html" class="action-chip action-chip-secondary">
+        <span class="material-icons-round" style="font-size:15px;color:#0891B2;">visibility</span>
+        Monitor
+      </a>
+    </div>
+
+    <!-- Map -->
+    <div class="anim anim-2">
+      <div class="section-header">
+        <span class="section-title">Live Restoration Map</span>
+        <a href="./explore_map.html" class="section-link">Full Map</a>
+      </div>
+      <div class="map-wrap" style="height:220px;">
+        <div id="homeMap" style="width:100%;height:100%;"></div>
+      </div>
+    </div>
+
+    <!-- Recent Activities -->
+    <div class="anim anim-3">
+      <div class="section-header">
+        <span class="section-title">Recent Activities</span>
+        <a href="./my_activities_list.html" class="section-link">View All</a>
+      </div>
+      <div class="card">
+        <a href="./activity_details.html" class="activity-row" style="display:flex;">
+          <div class="activity-icon" style="background:#EAF9EF;">
+            <span class="material-icons-round" style="color:#1A6636;">forest</span>
+          </div>
+          <div class="activity-info">
+            <div class="activity-name">Chir Pine Reforestation</div>
+            <div class="activity-meta">Margalla Hills Zone 1 · Verified</div>
+            <div style="margin-top:6px;"><span class="badge badge-green">+120 Saplings</span></div>
+          </div>
+          <span class="material-icons-round" style="font-size:18px;color:var(--text-muted);margin-left:4px;margin-top:2px;">chevron_right</span>
+        </a>
+        <a href="./activity_details.html" class="activity-row" style="display:flex;border-bottom:none;">
+          <div class="activity-icon" style="background:#F3E8FF;">
+            <span class="material-icons-round" style="color:#7A5AF8;">grass</span>
+          </div>
+          <div class="activity-info">
+            <div class="activity-name">Seed Bombing — Sector G11</div>
+            <div class="activity-meta">Reported · 3 days ago</div>
+            <div style="margin-top:6px;"><span class="badge badge-neutral">800 Seeds</span></div>
+          </div>
+          <span class="material-icons-round" style="font-size:18px;color:var(--text-muted);margin-left:4px;margin-top:2px;">chevron_right</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Monthly goal preview -->
+    <div class="anim anim-4">
+      <a href="./monthly_community_goal.html" class="card" style="display:block;padding:16px;">
+        <div class="section-header" style="margin-bottom:8px;">
+          <span class="section-title">August Goal</span>
+          <span class="badge badge-lime">74.5% Done</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:74.5%;"></div>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--text-muted);">74,500 / 100,000 Trees This Month</div>
+      </a>
+    </div>
+
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="./home_dashboard.html" class="nav-item active" id="nav-home">
+      <span class="material-icons-round">home</span>
+      <span class="nav-label">Home</span>
+      <span class="nav-dot"></span>
+    </a>
+    <a href="./explore_map.html" class="nav-item" id="nav-map">
+      <span class="material-icons-round">explore</span>
+      <span class="nav-label">Map</span>
+    </a>
+    <a href="./create_activity.html" class="nav-fab" id="nav-fab">
+      <span class="material-icons-round">add</span>
+    </a>
+    <a href="./community_hub.html" class="nav-item" id="nav-community">
+      <span class="material-icons-round">group</span>
+      <span class="nav-label">Community</span>
+    </a>
+    <a href="./user_profile.html" class="nav-item" id="nav-profile">
+      <span class="material-icons-round">person</span>
+      <span class="nav-label">Profile</span>
+    </a>
+  </nav>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var map = L.map('homeMap', { zoomControl: false, attributionControl: false })
+    .setView([33.7294, 73.0931], 12);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 18
+  }).addTo(map);
+
+  var greenIcon = L.divIcon({
+    className: '',
+    html: '<div style="width:12px;height:12px;border-radius:50%;background:#C8FF55;border:2.5px solid #0F1512;box-shadow:0 2px 6px rgba(0,0,0,0.35);"></div>',
+    iconSize: [12, 12], iconAnchor: [6, 6]
+  });
+
+  L.marker([33.7380, 73.0650], {icon: greenIcon}).addTo(map)
+    .bindPopup('<b style="font-family:Plus Jakarta Sans,sans-serif;font-size:12px;">Margalla Reforestation</b><br><span style="font-size:11px;color:#6B8A68;">5,400 Saplings</span>');
+  L.marker([33.6930, 73.0680], {icon: greenIcon}).addTo(map)
+    .bindPopup('<b style="font-family:Plus Jakarta Sans,sans-serif;font-size:12px;">Shakarparian Site</b><br><span style="font-size:11px;color:#6B8A68;">3,200 Saplings</span>');
+
+  var savedLogs = JSON.parse(localStorage.getItem('userRestorationLogs') || '[]');
+  var userIcon = L.divIcon({
+    className: 'user-placed-pin',
+    html: '<span class="material-icons-round" style="font-size:15px;">eco</span>',
+    iconSize: [36, 36], iconAnchor: [18, 18]
+  });
+  var added = 0;
+  savedLogs.forEach(function(item) {
+    if (item.lat && item.lng) {
+      L.marker([item.lat, item.lng], {icon: userIcon}).addTo(map)
+        .bindPopup('<b>' + item.title + '</b><br>+' + item.count + ' ' + item.species);
+      added += item.count;
+    }
+  });
+  if (added > 0) {
+    var el = document.getElementById('totalPlantedCount');
+    el.textContent = (14280 + added).toLocaleString();
+    document.getElementById('userPinsCount').textContent = (4 + savedLogs.length);
+  }
+});
+</script>
+</body>
+</html>

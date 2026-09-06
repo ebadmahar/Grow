@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Welcome</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    .welcome-shell {
+      width: 100%;
+      max-width: 430px;
+      min-height: 100dvh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+    }
+    .hero-block {
+      height: clamp(320px, 52vh, 420px);
+      position: relative;
+      overflow: hidden;
+      border-radius: 0 0 28px 28px;
+      flex-shrink: 0;
+    }
+    .hero-block img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .hero-block::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(15,21,18,0.15) 0%, rgba(15,21,18,0.72) 100%);
+    }
+    .hero-top {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: white;
+    }
+    .hero-mark {
+      width: 32px; height: 32px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      display: grid;
+      place-items: center;
+      color: var(--lime);
+    }
+    .hero-mark svg { width: 18px; height: 18px; }
+    .hero-brand-name {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      color: #fff;
+    }
+    .hero-bottom {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .hero-caption {
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(12px);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .hero-caption .material-icons-round { font-size: 13px; color: #1A6636; }
+    .hero-counter {
+      background: var(--lime);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .content-block {
+      flex: 1;
+      padding: 28px 20px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .copy-block { display: flex; flex-direction: column; gap: 10px; }
+    .actions { display: flex; flex-direction: column; gap: 10px; }
+    .sign-in-link {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-3);
+      padding: 12px;
+    }
+    .sign-in-link span { color: var(--text-1); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="welcome-shell">
+    <div class="hero-block anim">
+      <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80" alt="Restoration field"/>
+      <div class="hero-top">
+        <div class="hero-mark">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 21V13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 17C12 17 7 15 6.5 10C6.5 10 9.5 8.5 12 17Z" fill="currentColor"/>
+            <path d="M12 13C12 13 17 11 17.5 6C17.5 6 14.5 4.5 12 13Z" fill="currentColor" opacity="0.55"/>
+          </svg>
+        </div>
+        <span class="hero-brand-name">Grōv</span>
+      </div>
+      <div class="hero-bottom">
+        <div class="hero-caption">
+          <span class="material-icons-round">verified</span>
+          Field-ready reporting
+        </div>
+        <div class="hero-counter">74.5K Trees</div>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <div class="copy-block anim anim-2">
+        <span class="entry-kicker">Restoration, together</span>
+        <h1 class="entry-h1">Build the record.<br>Grow the future.</h1>
+        <p class="entry-sub">Log every action, add evidence, and return to see what takes root.</p>
+      </div>
+
+      <div class="actions anim anim-3">
+        <a href="./register_screen.html" class="btn btn-primary">Get Started</a>
+        <a href="./login_screen.html" class="sign-in-link">Already have an account? <span>Sign In</span></a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

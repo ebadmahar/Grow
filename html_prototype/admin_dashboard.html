@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Web Admin Portal</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"/>
+  <style>
+    :root {
+      --ink: #0F1512;
+      --lime: #C8FF55;
+      --surface: #F4F7F0;
+      --card: #FFFFFF;
+      --card-border: #E2E8DC;
+      --text-1: #0F1512;
+      --text-2: #3A5040;
+      --text-muted: #809684;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background: #E5E8E0; color: var(--text-1); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 20px; }
+    .portal-shell { width: 100%; max-width: 1000px; background: var(--surface); border-radius: 20px; border: 1px solid var(--card-border); box-shadow: 0 12px 40px rgba(0,0,0,0.15); overflow: hidden; }
+    
+    header { background: var(--ink); color: #fff; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .brand-row { display: flex; align-items: center; gap: 12px; }
+    .brand-mark { width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.1); display: grid; place-items: center; color: var(--lime); }
+    .brand-title { font-size: 18px; font-weight: 800; }
+    .brand-sub { font-size: 11px; color: var(--lime); font-weight: 700; }
+    
+    .login-box { max-width: 400px; margin: 60px auto; padding: 30px; background: var(--card); border-radius: 16px; border: 1px solid var(--card-border); }
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 11px; font-weight: 800; color: var(--text-2); text-transform: uppercase; margin-bottom: 6px; display: block; }
+    .form-input { width: 100%; height: 44px; border-radius: 8px; border: 1.5px solid var(--card-border); padding: 0 14px; font-size: 14px; outline: none; }
+    .form-input:focus { border-color: var(--ink); }
+    .btn-primary { width: 100%; height: 46px; background: var(--ink); color: #fff; border: none; border-radius: 8px; font-weight: 800; font-size: 14px; cursor: pointer; }
+    .btn-primary:hover { background: #1a2520; }
+    .alert-error { background: #FEE2E2; color: #991B1B; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: 700; margin-bottom: 14px; display: none; }
+
+    .admin-main { padding: 24px; display: none; }
+    .metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .metric-card { background: var(--card); padding: 18px; border-radius: 12px; border: 1px solid var(--card-border); }
+    .metric-val { font-size: 26px; font-weight: 800; color: var(--ink); }
+    .metric-lbl { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
+    
+    .nav-tabs { display: flex; gap: 10px; border-bottom: 2px solid var(--card-border); margin-bottom: 20px; }
+    .tab-btn { padding: 10px 16px; border: none; background: none; font-size: 13px; font-weight: 800; color: var(--text-2); cursor: pointer; border-bottom: 3px solid transparent; }
+    .tab-btn.active { color: var(--ink); border-bottom-color: var(--lime); }
+    
+    .table-card { background: var(--card); border-radius: 12px; border: 1px solid var(--card-border); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { background: #FAFDF6; padding: 12px 16px; font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-2); border-bottom: 1px solid var(--card-border); }
+    td { padding: 14px 16px; font-size: 13px; border-bottom: 1px solid var(--card-border); }
+    .badge { display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: 10px; font-weight: 800; background: #FEF3E2; color: #874D0F; }
+    .badge-success { background: #EAF9EF; color: #1A6636; }
+    .action-btn { padding: 6px 12px; border-radius: 6px; border: none; font-size: 11px; font-weight: 800; cursor: pointer; }
+    .btn-approve { background: var(--ink); color: var(--lime); }
+    .btn-reject { background: #FEE2E2; color: #991B1B; }
+  </style>
+</head>
+<body>
+
+<div class="portal-shell">
+  <header>
+    <div class="brand-row">
+      <div class="brand-mark"><span class="material-icons-round">admin_panel_settings</span></div>
+      <div>
+        <div class="brand-title">Grōv Web Admin Portal</div>
+        <div class="brand-sub">Community Restoration &amp; Field Moderation</div>
+      </div>
+    </div>
+    <div id="userInfo" style="font-size:12px;font-weight:700;color:#A8C3A0;">Islamabad Region</div>
+  </header>
+
+  <!-- Login Form Section -->
+  <div id="loginSection" class="login-box">
+    <div style="text-align:center;margin-bottom:20px;">
+      <h2 style="font-size:20px;font-weight:800;">Admin Sign In</h2>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">Requires Google Authenticator 2FA</p>
+    </div>
+    
+    <div id="loginError" class="alert-error">Invalid password or email</div>
+
+    <div class="form-group">
+      <label class="form-label">Admin Email</label>
+      <input type="email" id="emailInput" class="form-input" value="admin@grov.app"/>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" id="passwordInput" class="form-input" value="password"/>
+    </div>
+
+    <div class="form-group" id="2faGroup" style="display:none;">
+      <label class="form-label" style="color:#2563EB;">Google Authenticator 2FA (6-Digit Code)</label>
+      <input type="text" id="totpInput" class="form-input" placeholder="123456" maxlength="6" style="border-color:#2563EB;background:#F0F7FF;"/>
+    </div>
+
+    <button id="loginBtn" class="btn-primary" onclick="performAdminLogin()">Sign In with 2FA</button>
+  </div>
+
+  <!-- Admin Main Dashboard Section -->
+  <div id="dashboardSection" class="admin-main">
+    <div class="metrics-row">
+      <div class="metric-card">
+        <div class="metric-val" id="metricUsers">247</div>
+        <div class="metric-lbl">Total Registered Users</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val" id="metricTrees">74,500</div>
+        <div class="metric-lbl">Trees Planted</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val" id="metricQueue">12</div>
+        <div class="metric-lbl">Pending Review</div>
+      </div>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('queue')">Pending Verification Queue</button>
+      <button class="tab-btn" onclick="switchTab('goals')">Monthly Community Goals</button>
+      <button class="tab-btn" onclick="switchTab('broadcast')">Broadcast Announcement</button>
+    </div>
+
+    <!-- Activity Verification Table -->
+    <div id="tabQueue" class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Site Name</th>
+            <th>Type</th>
+            <th>Logged By</th>
+            <th>Quantity</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="queueTbody">
+          <tr>
+            <td><b>Margalla Hills Zone 1</b></td>
+            <td>Plantation</td>
+            <td>Ebad Mahar</td>
+            <td>120 Saplings</td>
+            <td><span class="badge">Reported</span></td>
+            <td>
+              <button class="action-btn btn-approve" onclick="verifyActivity(1, 'verified')">Approve &amp; Award Points</button>
+              <button class="action-btn btn-reject" onclick="verifyActivity(1, 'rejected')">Reject</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Monthly Goals Panel -->
+    <div id="tabGoals" class="table-card" style="display:none;padding:24px;">
+      <h3 style="font-size:16px;font-weight:800;margin-bottom:12px;">Update Community Target Goals</h3>
+      <div style="max-width:400px;">
+        <div class="form-group">
+          <label class="form-label">Target Trees Planted</label>
+          <input type="number" id="goalTrees" class="form-input" value="100000"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Target Seeds Dispersed</label>
+          <input type="number" id="goalSeeds" class="form-input" value="50000"/>
+        </div>
+        <button class="btn-primary" onclick="updateGoals()">Save Monthly Targets</button>
+      </div>
+    </div>
+
+    <!-- Broadcast Notification Panel -->
+    <div id="tabBroadcast" class="table-card" style="display:none;padding:24px;">
+      <h3 style="font-size:16px;font-weight:800;margin-bottom:12px;">Broadcast Platform Announcement</h3>
+      <div style="max-width:500px;">
+        <div class="form-group">
+          <label class="form-label">Announcement Title</label>
+          <input type="text" id="bcTitle" class="form-input" placeholder="e.g. Community Plantation Drive This Sunday"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message Details</label>
+          <textarea id="bcMessage" class="form-input" style="height:90px;padding:10px;" placeholder="Message to send to all users..."></textarea>
+        </div>
+        <button class="btn-primary" onclick="sendBroadcast()">Dispatch Broadcast Notification</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  var API_BASE = 'http://localhost:8000/api/v1';
+  var authToken = null;
+
+  async function performAdminLogin() {
+    var email = document.getElementById('emailInput').value;
+    var password = document.getElementById('passwordInput').value;
+    var totp = document.getElementById('totpInput').value;
+    var errorDiv = document.getElementById('loginError');
+
+    errorDiv.style.display = 'none';
+
+    try {
+      var res = await fetch(API_BASE + '/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ email: email, password: password, totp_code: totp || undefined })
+      });
+
+      var data = await res.json();
+
+      if (!res.ok || !data.success) {
+        errorDiv.innerText = 'Invalid password or email';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      if (data.data && data.data.requires_2fa) {
+        document.getElementById('2faGroup').style.display = 'block';
+        errorDiv.innerText = 'Google Authenticator 2FA required. Enter your 6-digit OTP code below.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      authToken = data.data.token;
+      document.getElementById('loginSection').style.display = 'none';
+      document.getElementById('dashboardSection').style.display = 'block';
+      loadAdminDashboardData();
+    } catch (e) {
+      errorDiv.innerText = 'Invalid password or email';
+      errorDiv.style.display = 'block';
+    }
+  }
+
+  async function loadAdminDashboardData() {
+    try {
+      var res = await fetch(API_BASE + '/admin/dashboard', {
+        headers: { 'Authorization': 'Bearer ' + authToken }
+      });
+      var data = await res.json();
+      if (data.success) {
+        document.getElementById('metricUsers').innerText = data.data.total_users;
+        document.getElementById('metricTrees').innerText = data.data.trees_planted.toLocaleString();
+        document.getElementById('metricQueue').innerText = data.data.pending_review;
+      }
+    } catch (e) { console.warn(e); }
+  }
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tabQueue').style.display = 'none';
+    document.getElementById('tabGoals').style.display = 'none';
+    document.getElementById('tabBroadcast').style.display = 'none';
+
+    if (tab === 'queue') {
+      document.getElementById('tabQueue').style.display = 'block';
+    } else if (tab === 'goals') {
+      document.getElementById('tabGoals').style.display = 'block';
+    } else if (tab === 'broadcast') {
+      document.getElementById('tabBroadcast').style.display = 'block';
+    }
+    event.target.classList.add('active');
+  }
+
+  async function verifyActivity(id, status) {
+    try {
+      var res = await fetch(API_BASE + '/admin/activities/' + id + '/verify', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+        body: JSON.stringify({ status: status })
+      });
+      var data = await res.json();
+      alert('Activity marked as ' + status + '!');
+      loadAdminDashboardData();
+    } catch (e) { alert('Action failed'); }
+  }
+
+  async function updateGoals() {
+    var trees = document.getElementById('goalTrees').value;
+    var seeds = document.getElementById('goalSeeds').value;
+    try {
+      var res = await fetch(API_BASE + '/admin/goals/monthly', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+        body: JSON.stringify({ target_trees: parseInt(trees), target_seeds: parseInt(seeds) })
+      });
+      alert('Monthly goals updated!');
+    } catch (e) { alert('Update failed'); }
+  }
+
+  async function sendBroadcast() {
+    var title = document.getElementById('bcTitle').value;
+    var msg = document.getElementById('bcMessage').value;
+    try {
+      var res = await fetch(API_BASE + '/admin/notifications/broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+        body: JSON.stringify({ title: title, message: msg })
+      });
+      alert('Broadcast notification sent to all community users!');
+      document.getElementById('bcTitle').value = '';
+      document.getElementById('bcMessage').value = '';
+    } catch (e) { alert('Broadcast failed'); }
+  }
+</script>
+
+</body>
+</html>

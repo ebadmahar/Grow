@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Tree Plantation Log</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    .media-upload {
+      height: 110px; border: 1.5px dashed var(--card-border);
+      border-radius: var(--r-md); background: var(--surface);
+      display: grid; place-items: center; cursor: pointer;
+      transition: all var(--dur) var(--ease);
+    }
+    .media-upload:active { background: var(--surface-2); }
+    .upload-inner { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .upload-inner .material-icons-round { font-size: 28px; color: var(--text-muted); }
+    .upload-label { font-size: 12px; font-weight: 600; color: var(--text-3); }
+    .upload-sub { font-size: 10px; color: var(--text-muted); }
+    .gps-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 14px; background: var(--surface); border-radius: var(--r-sm);
+      border: 1.5px solid var(--card-border);
+    }
+    .gps-info { display: flex; align-items: center; gap: 8px; }
+    .gps-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ADE80; }
+    .gps-text { font-size: 12px; font-weight: 600; color: var(--text-2); }
+    .gps-btn { font-size: 11px; font-weight: 700; color: var(--text-1); background: var(--lime); border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+    .form-card {
+      background: var(--card); border: 1px solid var(--card-border);
+      border-radius: var(--r-xl); padding: 20px;
+      display: flex; flex-direction: column; gap: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+    .species-link { font-size: 11px; font-weight: 700; color: var(--text-3); display: inline-flex; align-items: center; gap: 3px; margin-top: 4px; }
+    .species-link .material-icons-round { font-size: 13px; }
+  </style>
+</head>
+<body>
+<div class="app-shell screen">
+
+  <header class="app-header">
+    <a href="./create_activity.html" class="icon-btn">
+      <span class="material-icons-round">arrow_back</span>
+    </a>
+    <h1 class="header-title">Tree Plantation</h1>
+    <a href="./notifications.html" class="icon-btn">
+      <span class="material-icons-round">notifications</span>
+    </a>
+  </header>
+
+  <main class="p-page" style="display:flex;flex-direction:column;gap:14px;">
+
+    <div class="anim" style="display:flex;align-items:center;gap:10px;padding:14px;background:rgba(200,255,85,0.08);border:1px solid rgba(200,255,85,0.25);border-radius:var(--r-md);">
+      <span class="material-icons-round" style="color:#3B5C22;font-size:18px;">info</span>
+      <p style="font-size:11px;color:#3B5C22;line-height:1.5;">Record your GPS, species, and photos. This will be logged as reported — evidence helps verification.</p>
+    </div>
+
+    <form id="plantationForm" action="./plantation_confirmation.html" class="form-card anim anim-2">
+
+      <div class="form-group">
+        <label class="form-label">Tree Species</label>
+        <select id="formSpecies" class="form-input form-select">
+          <option>Pinus Roxburghii (Chir Pine)</option>
+          <option>Rhizophora Mangle (Red Mangrove)</option>
+          <option>Quercus Robur (English Oak)</option>
+          <option>Dalbergia Sissoo (Sheesham)</option>
+          <option>Acacia Modesta (Phulai)</option>
+        </select>
+        <a href="./species_details.html" class="species-link">
+          <span class="material-icons-round">info</span>View Species Guide
+        </a>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Quantity Planted</label>
+          <input id="formCount" type="number" class="form-input" value="120" min="1"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-input" id="formDate"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Site / Plot Name</label>
+        <input id="formLocation" type="text" class="form-input" placeholder="e.g. Margalla Hills Sector 3" value="Margalla Hills Sector 3"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">GPS Location</label>
+        <div class="gps-row">
+          <div class="gps-info">
+            <div class="gps-dot"></div>
+            <span class="gps-text" id="gpsText">33.7294, 73.0931</span>
+          </div>
+          <div class="gps-btn" id="refreshGps">Refresh</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Planting Method</label>
+        <select class="form-input form-select">
+          <option>Pit Planting</option>
+          <option>Trench Planting</option>
+          <option>Mound Planting</option>
+          <option>Aerial Planting</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Field Notes</label>
+        <textarea class="form-input form-textarea" placeholder="Describe conditions, soil type, slope, water access..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Photos / Evidence</label>
+        <div class="media-upload" id="mediaUpload">
+          <div class="upload-inner">
+            <span class="material-icons-round">add_photo_alternate</span>
+            <span class="upload-label">Add Photos</span>
+            <span class="upload-sub">JPG, PNG · Up to 5 images</span>
+          </div>
+        </div>
+        <input type="file" id="mediaInput" accept="image/*" multiple style="display:none;"/>
+      </div>
+
+      <button type="submit" class="btn btn-lime" style="margin-top:4px;">
+        <span class="material-icons-round" style="font-size:18px;">check_circle</span>
+        Submit &amp; Pin Location
+      </button>
+    </form>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="./home_dashboard.html" class="nav-item">
+      <span class="material-icons-round">home</span>
+      <span class="nav-label">Home</span>
+    </a>
+    <a href="./explore_map.html" class="nav-item">
+      <span class="material-icons-round">explore</span>
+      <span class="nav-label">Map</span>
+    </a>
+    <a href="./create_activity.html" class="nav-fab">
+      <span class="material-icons-round">add</span>
+    </a>
+    <a href="./community_hub.html" class="nav-item">
+      <span class="material-icons-round">group</span>
+      <span class="nav-label">Community</span>
+    </a>
+    <a href="./user_profile.html" class="nav-item">
+      <span class="material-icons-round">person</span>
+      <span class="nav-label">Profile</span>
+    </a>
+  </nav>
+</div>
+
+<script>
+  document.getElementById('formDate').valueAsDate = new Date();
+  document.getElementById('mediaUpload').addEventListener('click', function() {
+    document.getElementById('mediaInput').click();
+  });
+  document.getElementById('refreshGps').addEventListener('click', function() {
+    navigator.geolocation && navigator.geolocation.getCurrentPosition(function(pos) {
+      document.getElementById('gpsText').textContent = pos.coords.latitude.toFixed(5) + ', ' + pos.coords.longitude.toFixed(5);
+    });
+  });
+  document.getElementById('plantationForm').addEventListener('submit', function(e) {
+    var species  = document.getElementById('formSpecies').value;
+    var count    = parseInt(document.getElementById('formCount').value) || 100;
+    var location = document.getElementById('formLocation').value || 'Field Site';
+    var logs = JSON.parse(localStorage.getItem('userRestorationLogs') || '[]');
+    logs.push({
+      id: Date.now(), title: location, species: species, count: count,
+      lat: 33.7310 + (Math.random() * 0.02 - 0.01),
+      lng: 73.0850 + (Math.random() * 0.02 - 0.01),
+      type: 'plantation'
+    });
+    localStorage.setItem('userRestorationLogs', JSON.stringify(logs));
+  });
+</script>
+</body>
+</html>

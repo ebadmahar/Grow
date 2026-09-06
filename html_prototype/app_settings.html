@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Settings</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    .settings-group-label {
+      font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.10em;
+      color:var(--text-muted);padding:14px 16px 6px;
+    }
+    .toggle-row {
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 16px;border-bottom:1px solid var(--card-border);
+    }
+    .toggle-row:last-child { border-bottom:none; }
+    .toggle-info { display:flex;align-items:center;gap:12px; }
+    .toggle-icon { width:36px;height:36px;border-radius:11px;display:grid;place-items:center;flex-shrink:0; }
+    .toggle-icon .material-icons-round { font-size:18px; }
+    .toggle-label { font-size:13px;font-weight:600;color:var(--text-1); }
+    .toggle-sub { font-size:11px;color:var(--text-muted);margin-top:1px; }
+    .nav-link-row {
+      display:flex;align-items:center;gap:12px;padding:14px 16px;
+      border-bottom:1px solid var(--card-border);
+      text-decoration:none;color:inherit;cursor:pointer;
+      transition:background var(--dur) ease;
+    }
+    .nav-link-row:active { background:var(--surface); }
+    .nav-link-row:last-child { border-bottom:none; }
+    .ver-note {
+      text-align:center;font-size:11px;color:var(--text-muted);padding:16px;
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell screen">
+
+  <header class="app-header">
+    <a href="./user_profile.html" class="icon-btn">
+      <span class="material-icons-round">arrow_back</span>
+    </a>
+    <h1 class="header-title">Settings</h1>
+    <div></div>
+  </header>
+
+  <main style="display:flex;flex-direction:column;gap:4px;">
+
+    <!-- Profile section -->
+    <div class="settings-group-label">Account</div>
+    <div class="card" style="border-radius:0;border-left:none;border-right:none;" >
+      <a href="./profile_setup.html" class="nav-link-row">
+        <div class="toggle-icon" style="background:var(--surface-2);"><span class="material-icons-round" style="color:var(--text-3);">person</span></div>
+        <div style="flex:1;">
+          <div class="toggle-label">Edit Profile</div>
+        </div>
+        <span class="material-icons-round" style="color:var(--text-muted);font-size:18px;">chevron_right</span>
+      </a>
+      <a href="#" class="nav-link-row">
+        <div class="toggle-icon" style="background:var(--surface-2);"><span class="material-icons-round" style="color:var(--text-3);">lock</span></div>
+        <div style="flex:1;">
+          <div class="toggle-label">Change Password</div>
+        </div>
+        <span class="material-icons-round" style="color:var(--text-muted);font-size:18px;">chevron_right</span>
+      </a>
+    </div>
+
+    <!-- Notifications -->
+    <div class="settings-group-label">Notifications</div>
+    <div class="card" style="border-radius:0;border-left:none;border-right:none;">
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-icon" style="background:#EAF9EF;"><span class="material-icons-round" style="color:#1A6636;">alarm</span></div>
+          <div>
+            <div class="toggle-label">Monitoring Reminders</div>
+            <div class="toggle-sub">Get reminded to monitor activities</div>
+          </div>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-icon" style="background:rgba(200,255,85,0.10);"><span class="material-icons-round" style="color:#3B5C22;">emoji_events</span></div>
+          <div>
+            <div class="toggle-label">Goal Progress</div>
+            <div class="toggle-sub">Monthly community goal updates</div>
+          </div>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-icon" style="background:#E0F4FF;"><span class="material-icons-round" style="color:#0891B2;">group</span></div>
+          <div>
+            <div class="toggle-label">Community Tasks</div>
+            <div class="toggle-sub">New task alerts and reminders</div>
+          </div>
+        </div>
+        <div class="toggle" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-icon" style="background:var(--surface-2);"><span class="material-icons-round" style="color:var(--text-3);">verified</span></div>
+          <div>
+            <div class="toggle-label">Verification Updates</div>
+            <div class="toggle-sub">When activities are verified</div>
+          </div>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+    </div>
+
+    <!-- App -->
+    <div class="settings-group-label">App</div>
+    <div class="card" style="border-radius:0;border-left:none;border-right:none;">
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-icon" style="background:var(--surface-2);"><span class="material-icons-round" style="color:var(--text-3);">wifi_off</span></div>
+          <div>
+            <div class="toggle-label">Offline Mode</div>
+            <div class="toggle-sub">Store activities when offline</div>
+          </div>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-icon" style="background:var(--surface-2);"><span class="material-icons-round" style="color:var(--text-3);">gps_fixed</span></div>
+          <div>
+            <div class="toggle-label">High-Accuracy GPS</div>
+            <div class="toggle-sub">Better location, uses more battery</div>
+          </div>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <a href="#" class="nav-link-row">
+        <div class="toggle-icon" style="background:var(--surface-2);"><span class="material-icons-round" style="color:var(--text-3);">translate</span></div>
+        <div style="flex:1;">
+          <div class="toggle-label">Language</div>
+          <div style="font-size:11px;color:var(--text-muted);">English</div>
+        </div>
+        <span class="material-icons-round" style="color:var(--text-muted);font-size:18px;">chevron_right</span>
+      </a>
+    </div>
+
+    <!-- Danger zone -->
+    <div class="settings-group-label">Danger Zone</div>
+    <div class="card" style="border-radius:0;border-left:none;border-right:none;">
+      <div class="nav-link-row" style="color:#E53935;">
+        <div class="toggle-icon" style="background:#FEE8E8;"><span class="material-icons-round" style="color:#E53935;">delete_forever</span></div>
+        <div class="toggle-label" style="color:#E53935;">Delete Account</div>
+        <span class="material-icons-round" style="color:#FECACA;font-size:18px;">chevron_right</span>
+      </div>
+    </div>
+
+    <div class="ver-note">Grōv v1.0.0 — Community Restoration Platform</div>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="./home_dashboard.html" class="nav-item"><span class="material-icons-round">home</span><span class="nav-label">Home</span></a>
+    <a href="./explore_map.html" class="nav-item"><span class="material-icons-round">explore</span><span class="nav-label">Map</span></a>
+    <a href="./create_activity.html" class="nav-fab"><span class="material-icons-round">add</span></a>
+    <a href="./community_hub.html" class="nav-item"><span class="material-icons-round">group</span><span class="nav-label">Community</span></a>
+    <a href="./user_profile.html" class="nav-item active"><span class="material-icons-round">person</span><span class="nav-label">Profile</span><span class="nav-dot"></span></a>
+  </nav>
+</div>
+</body>
+</html>

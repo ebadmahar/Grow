@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Create Activity</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    .type-card {
+      display: flex; align-items: center; gap: 16px; padding: 20px;
+      background: var(--card); border: 1.5px solid var(--card-border);
+      border-radius: var(--r-xl); box-shadow: var(--shadow-sm);
+      cursor: pointer; transition: all var(--dur) var(--ease);
+      text-decoration: none; color: inherit;
+    }
+    .type-card:active { transform: scale(0.97); }
+    .type-icon {
+      width: 52px; height: 52px; border-radius: 17px; flex-shrink: 0;
+      display: grid; place-items: center;
+    }
+    .type-icon .material-icons-round { font-size: 26px; }
+    .type-info { flex: 1; }
+    .type-name { font-size: 15px; font-weight: 800; letter-spacing: -0.04em; color: var(--text-1); margin-bottom: 4px; }
+    .type-desc { font-size: 12px; color: var(--text-3); line-height: 1.5; }
+    .type-arrow { color: var(--text-muted); }
+    .type-arrow .material-icons-round { font-size: 20px; }
+    .section-intro {
+      font-size: 13px; color: var(--text-3); line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell screen">
+
+  <header class="app-header">
+    <a href="./home_dashboard.html" class="icon-btn">
+      <span class="material-icons-round">arrow_back</span>
+    </a>
+    <h1 class="header-title">Create Activity</h1>
+    <a href="./notifications.html" class="icon-btn">
+      <span class="material-icons-round">notifications</span>
+    </a>
+  </header>
+
+  <main class="p-page" style="display:flex;flex-direction:column;gap:16px;">
+    <div class="anim">
+      <div style="font-size:22px;font-weight:800;letter-spacing:-0.05em;color:var(--text-1);margin-bottom:6px;">What are you<br>logging today?</div>
+      <p class="section-intro">Choose the type of restoration work you completed in the field.</p>
+    </div>
+
+    <a href="./plantation_activity_form.html" class="type-card anim anim-2">
+      <div class="type-icon" style="background:#EAF9EF;">
+        <span class="material-icons-round" style="color:#1A6636;">forest</span>
+      </div>
+      <div class="type-info">
+        <div class="type-name">Tree Plantation</div>
+        <div class="type-desc">Log sapling planting, species, and GPS location.</div>
+      </div>
+      <div class="type-arrow"><span class="material-icons-round">chevron_right</span></div>
+    </a>
+
+    <a href="./seeding_activity_form.html" class="type-card anim anim-3">
+      <div class="type-icon" style="background:#F3E8FF;">
+        <span class="material-icons-round" style="color:#7A5AF8;">grass</span>
+      </div>
+      <div class="type-info">
+        <div class="type-name">Seed Bombing</div>
+        <div class="type-desc">Record aerial or ground dispersal of native seed balls.</div>
+      </div>
+      <div class="type-arrow"><span class="material-icons-round">chevron_right</span></div>
+    </a>
+
+    <a href="./add_monitoring_record.html" class="type-card anim anim-4">
+      <div class="type-icon" style="background:#E0F4FF;">
+        <span class="material-icons-round" style="color:#0891B2;">visibility</span>
+      </div>
+      <div class="type-info">
+        <div class="type-name">Add Monitoring Record</div>
+        <div class="type-desc">Observe and record outcomes from a past activity.</div>
+      </div>
+      <div class="type-arrow"><span class="material-icons-round">chevron_right</span></div>
+    </a>
+
+    <a href="./report_activity.html" class="type-card anim anim-5">
+      <div class="type-icon" style="background:#FEE8E8;">
+        <span class="material-icons-round" style="color:#E53935;">flag</span>
+      </div>
+      <div class="type-info">
+        <div class="type-name">Report Issue</div>
+        <div class="type-desc">Flag environmental risks, pests, or site damage.</div>
+      </div>
+      <div class="type-arrow"><span class="material-icons-round">chevron_right</span></div>
+    </a>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="./home_dashboard.html" class="nav-item">
+      <span class="material-icons-round">home</span>
+      <span class="nav-label">Home</span>
+    </a>
+    <a href="./explore_map.html" class="nav-item">
+      <span class="material-icons-round">explore</span>
+      <span class="nav-label">Map</span>
+    </a>
+    <a href="./create_activity.html" class="nav-fab">
+      <span class="material-icons-round">add</span>
+    </a>
+    <a href="./community_hub.html" class="nav-item">
+      <span class="material-icons-round">group</span>
+      <span class="nav-label">Community</span>
+    </a>
+    <a href="./user_profile.html" class="nav-item">
+      <span class="material-icons-round">person</span>
+      <span class="nav-label">Profile</span>
+    </a>
+  </nav>
+</div>
+</body>
+</html>

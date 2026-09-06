@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Species Details</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    .species-hero { height:220px;position:relative;overflow:hidden; }
+    .species-hero img { width:100%;height:100%;object-fit:cover; }
+    .species-hero::after { content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(15,21,18,0.75)); }
+    .species-meta { position:absolute;bottom:16px;left:16px;right:16px;z-index:2; }
+    .species-name { font-size:20px;font-weight:800;letter-spacing:-0.04em;color:#fff;line-height:1.15; }
+    .species-sci { font-size:12px;color:rgba(255,255,255,0.55);margin-top:2px;font-style:italic; }
+    .info-row { display:flex;align-items:flex-start;gap:10px;padding:13px 16px;border-bottom:1px solid var(--card-border); }
+    .info-row:last-child { border-bottom:none; }
+    .info-icon { width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex-shrink:0;margin-top:1px; }
+    .info-icon .material-icons-round { font-size:17px; }
+    .info-label { font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted); }
+    .info-value { font-size:13px;font-weight:600;color:var(--text-1);margin-top:2px;line-height:1.5; }
+  </style>
+</head>
+<body>
+<div class="app-shell screen">
+  <header class="app-header" style="position:absolute;background:transparent;border-bottom:none;">
+    <a href="./plantation_activity_form.html" class="icon-btn" style="background:rgba(255,255,255,0.88);"><span class="material-icons-round">arrow_back</span></a>
+    <div></div>
+    <div></div>
+  </header>
+  <div class="species-hero">
+    <img src="https://images.unsplash.com/photo-1503785640985-f62e3aeee448?auto=format&fit=crop&w=800&q=80" alt="Chir Pine"/>
+    <div class="species-meta">
+      <div class="species-name">Chir Pine</div>
+      <div class="species-sci">Pinus roxburghii</div>
+    </div>
+  </div>
+  <main class="p-page" style="display:flex;flex-direction:column;gap:14px;margin-top:8px;">
+    <div style="display:flex;gap:8px;">
+      <span class="badge badge-lime">Native</span>
+      <span class="badge badge-neutral">Active</span>
+      <span class="badge badge-neutral">Conifer</span>
+    </div>
+    <div class="card anim">
+      <div class="info-row">
+        <div class="info-icon" style="background:#EAF9EF;"><span class="material-icons-round" style="color:#1A6636;">info</span></div>
+        <div><div class="info-label">Common Name</div><div class="info-value">Chir Pine / Long-leaved Indian Pine</div></div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon" style="background:var(--surface-2);"><span class="material-icons-round" style="color:var(--text-3);">translate</span></div>
+        <div><div class="info-label">Local Name</div><div class="info-value">Chir (Urdu / Punjabi)</div></div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon" style="background:var(--surface-2);"><span class="material-icons-round" style="color:var(--text-3);">landscape</span></div>
+        <div><div class="info-label">Suitable Zones</div><div class="info-value">Margalla Hills, Sub-Himalayan foothills, 500–2,200m elevation</div></div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon" style="background:var(--surface-2);"><span class="material-icons-round" style="color:var(--text-3);">description</span></div>
+        <div><div class="info-label">Basic Description</div><div class="info-value">Fast-growing native pine, well-adapted to dry sub-tropical conditions. Forms dense forests critical for watershed protection and wildlife habitat.</div></div>
+      </div>
+      <div class="info-row" style="border-bottom:none;">
+        <div class="info-icon" style="background:#E0F4FF;"><span class="material-icons-round" style="color:#0891B2;">eco</span></div>
+        <div><div class="info-label">Basic Guidance</div><div class="info-value">Plant in well-drained rocky soils. Best planted at start of monsoon. Space 2–3m apart. No waterlogging. Requires 2–3 years of establishment support.</div></div>
+      </div>
+    </div>
+    <div style="background:var(--surface-2);border-radius:var(--r-sm);padding:12px;font-size:11px;color:var(--text-muted);line-height:1.5;" class="anim anim-2">
+      Advanced ecological recommendations for this species have been intentionally deferred until expert review. Consult a qualified restoration ecologist before large-scale planting.
+    </div>
+    <a href="./plantation_activity_form.html" class="btn btn-primary anim anim-3">
+      <span class="material-icons-round" style="font-size:18px;">forest</span>
+      Log Plantation with This Species
+    </a>
+  </main>
+  <nav class="bottom-nav">
+    <a href="./home_dashboard.html" class="nav-item"><span class="material-icons-round">home</span><span class="nav-label">Home</span></a>
+    <a href="./explore_map.html" class="nav-item"><span class="material-icons-round">explore</span><span class="nav-label">Map</span></a>
+    <a href="./create_activity.html" class="nav-fab"><span class="material-icons-round">add</span></a>
+    <a href="./community_hub.html" class="nav-item"><span class="material-icons-round">group</span><span class="nav-label">Community</span></a>
+    <a href="./user_profile.html" class="nav-item"><span class="material-icons-round">person</span><span class="nav-label">Profile</span></a>
+  </nav>
+</div>
+</body>
+</html>

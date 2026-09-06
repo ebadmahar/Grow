@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Create Account</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    .register-shell {
+      width: 100%; max-width: 430px; min-height: 100dvh;
+      margin: 0 auto; padding: 52px 20px 32px;
+      display: flex; flex-direction: column; gap: 28px;
+      background: var(--surface);
+    }
+    .back-btn {
+      position: absolute; top: 16px; left: 16px;
+      width: 36px; height: 36px; border-radius: var(--r-sm);
+      background: var(--card); border: 1px solid var(--card-border);
+      display: grid; place-items: center; color: var(--text-2);
+    }
+    .form-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--r-xl);
+      padding: 20px;
+      display: flex; flex-direction: column; gap: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .divider { height: 1px; background: var(--card-border); }
+    .footer-link { text-align: center; font-size: 13px; font-weight: 600; color: var(--text-3); }
+    .footer-link span { color: var(--text-1); font-weight: 700; }
+    .terms {
+      font-size: 11px; color: var(--text-muted); text-align: center; line-height: 1.5;
+    }
+    .terms a { color: var(--text-3); font-weight: 600; }
+  </style>
+</head>
+<body style="background:var(--surface);">
+  <a href="./welcome_screen.html" class="back-btn">
+    <span class="material-icons-round" style="font-size:18px;">arrow_back</span>
+  </a>
+
+  <div class="register-shell">
+    <div class="anim" style="display:flex;flex-direction:column;gap:12px;">
+      <div class="entry-mark">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M12 21V13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 17C12 17 7 15 6.5 10C6.5 10 9.5 8.5 12 17Z" fill="currentColor"/>
+          <path d="M12 13C12 13 17 11 17.5 6C17.5 6 14.5 4.5 12 13Z" fill="currentColor" opacity="0.55"/>
+        </svg>
+      </div>
+      <span class="entry-kicker">Join the Field</span>
+      <h1 class="entry-h1">Make every<br>effort count.</h1>
+      <p class="entry-sub">Set up your field profile in under a minute.</p>
+    </div>
+
+    <form action="./interest_selection.html" class="form-card anim anim-2">
+      <div class="form-group">
+        <label class="form-label" for="regName">Full Name</label>
+        <input id="regName" type="text" class="form-input" placeholder="Your name" value="Ebad Mahar"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="regEmail">Email</label>
+        <input id="regEmail" type="email" class="form-input" placeholder="you@example.com" value="ebad@grov.app"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="regPass">Create Password</label>
+        <input id="regPass" type="password" class="form-input" value="••••••••"/>
+      </div>
+      <div class="divider"></div>
+      <button type="submit" class="btn btn-primary">Continue Setup</button>
+      <p class="terms">By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+    </form>
+
+    <a href="./login_screen.html" class="footer-link anim anim-3">Already registered? <span>Sign In</span></a>
+  </div>
+</body>
+</html>

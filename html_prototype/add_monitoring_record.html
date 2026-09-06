@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Add Monitoring Record</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    .form-card { background:var(--card);border:1px solid var(--card-border);border-radius:var(--r-xl);padding:20px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow-sm); }
+    .media-upload { height:100px;border:1.5px dashed var(--card-border);border-radius:var(--r-md);background:var(--surface);display:grid;place-items:center;cursor:pointer; }
+    .upload-inner { display:flex;flex-direction:column;align-items:center;gap:5px; }
+    .upload-inner .material-icons-round { font-size:24px;color:var(--text-muted); }
+  </style>
+</head>
+<body>
+<div class="app-shell screen">
+  <header class="app-header">
+    <a href="./my_activities_list.html" class="icon-btn"><span class="material-icons-round">arrow_back</span></a>
+    <h1 class="header-title">Monitoring Record</h1>
+    <a href="./notifications.html" class="icon-btn"><span class="material-icons-round">notifications</span></a>
+  </header>
+  <main class="p-page" style="display:flex;flex-direction:column;gap:14px;">
+    <div class="anim" style="padding:14px;background:#E0F4FF;border:1px solid rgba(8,145,178,0.20);border-radius:var(--r-md);display:flex;align-items:center;gap:10px;">
+      <span class="material-icons-round" style="color:#0891B2;font-size:18px;">info</span>
+      <p style="font-size:11px;color:#0C4A6E;line-height:1.5;">Monitoring records track real outcomes. Observed counts do not replace the original reported quantity.</p>
+    </div>
+    <form action="./home_dashboard.html" class="form-card anim anim-2">
+      <div class="form-group">
+        <label class="form-label">Linked Activity</label>
+        <select class="form-input form-select">
+          <option>Chir Pine Reforestation — Margalla Zone 1</option>
+          <option>G-11 Seed Bombing Mission</option>
+          <option>Shakarparian Sapling Drive</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Observation Date</label>
+        <input type="date" class="form-input" id="obsDate"/>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Observed Count</label>
+          <input type="number" class="form-input" placeholder="How many visible?" value="96"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Established</label>
+          <input type="number" class="form-input" placeholder="Rooted / growing" value="82"/>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Surviving</label>
+          <input type="number" class="form-input" placeholder="Healthy" value="78"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Dead / Lost</label>
+          <input type="number" class="form-input" placeholder="Count" value="4"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Condition</label>
+        <select class="form-input form-select">
+          <option>Good — healthy growth</option>
+          <option>Fair — some stress signs</option>
+          <option>Poor — significant die-off</option>
+          <option>Unknown</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Observation Notes</label>
+        <textarea class="form-input form-textarea" placeholder="Describe what you observed: growth rate, pests, soil condition, weather..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Photos</label>
+        <div class="media-upload" id="mediaUpload">
+          <div class="upload-inner">
+            <span class="material-icons-round">add_photo_alternate</span>
+            <span style="font-size:11px;font-weight:600;color:var(--text-3);">Add Observation Photos</span>
+          </div>
+        </div>
+        <input type="file" id="mediaInput" accept="image/*" multiple style="display:none;"/>
+      </div>
+      <button type="submit" class="btn btn-lime" style="margin-top:4px;">
+        <span class="material-icons-round" style="font-size:18px;">visibility</span>
+        Submit Monitoring Record
+      </button>
+    </form>
+  </main>
+  <nav class="bottom-nav">
+    <a href="./home_dashboard.html" class="nav-item"><span class="material-icons-round">home</span><span class="nav-label">Home</span></a>
+    <a href="./explore_map.html" class="nav-item"><span class="material-icons-round">explore</span><span class="nav-label">Map</span></a>
+    <a href="./create_activity.html" class="nav-fab"><span class="material-icons-round">add</span></a>
+    <a href="./community_hub.html" class="nav-item"><span class="material-icons-round">group</span><span class="nav-label">Community</span></a>
+    <a href="./user_profile.html" class="nav-item"><span class="material-icons-round">person</span><span class="nav-label">Profile</span></a>
+  </nav>
+</div>
+<script>document.getElementById('obsDate').valueAsDate=new Date();document.getElementById('mediaUpload').addEventListener('click',function(){document.getElementById('mediaInput').click();});</script>
+</body>
+</html>

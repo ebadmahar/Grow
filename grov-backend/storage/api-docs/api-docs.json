@@ -1,0 +1,1670 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Grōv Restoration Platform API",
+        "description": "Production-quality REST API backend for Grōv field restoration tracking, monitoring, community hub, and leaderboard.",
+        "contact": {
+            "name": "Grōv Engineering Team",
+            "email": "support@grov.app"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api/v1",
+            "description": "Grōv Primary API Server v1"
+        }
+    ],
+    "paths": {
+        "/activities/my-activities": {
+            "get": {
+                "tags": [
+                    "Activities"
+                ],
+                "summary": "Get user's logged activities",
+                "description": "Returns list of current user's activities with filter options (all, plantation, seeding, monitored).",
+                "operationId": "dfc6844eb032df1344400fddb49601d8",
+                "parameters": [
+                    {
+                        "name": "filter",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "all",
+                                "plantation",
+                                "seeding",
+                                "monitored"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Activities retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/activities/{id}": {
+            "get": {
+                "tags": [
+                    "Activities"
+                ],
+                "summary": "Get single activity details",
+                "description": "Returns full activity information, stepper timeline, photos, and monitoring history.",
+                "operationId": "941e12e56ef66240b71dfe799a602dc0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Activity details retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Activity not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/activities/plantation": {
+            "post": {
+                "tags": [
+                    "Activities"
+                ],
+                "summary": "Log a tree plantation activity",
+                "description": "Logs sapling planting, creates location, stores photo evidence, awards server-side points.",
+                "operationId": "ded34b15ed6922a6a51d98833a214f57",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "species_id",
+                                    "quantity_planted",
+                                    "date",
+                                    "site_name",
+                                    "latitude",
+                                    "longitude",
+                                    "planting_method"
+                                ],
+                                "properties": {
+                                    "species_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "quantity_planted": {
+                                        "type": "integer",
+                                        "example": 120
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-08-27"
+                                    },
+                                    "site_name": {
+                                        "type": "string",
+                                        "example": "Margalla Hills Sector 3"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 33.7294
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 73.0931
+                                    },
+                                    "planting_method": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Pit Planting",
+                                            "Trench Planting",
+                                            "Mound Planting",
+                                            "Aerial Planting"
+                                        ]
+                                    },
+                                    "field_notes": {
+                                        "type": "string"
+                                    },
+                                    "photos[]": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Plantation activity logged successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/activities/seeding": {
+            "post": {
+                "tags": [
+                    "Activities"
+                ],
+                "summary": "Log a seed bombing activity",
+                "description": "Logs seed dispersal, creates location, stores photo evidence, awards server-side points.",
+                "operationId": "2991cc7054f140aadf1840496212d5c8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "species_id",
+                                    "seeds_dispersed",
+                                    "date",
+                                    "site_name",
+                                    "latitude",
+                                    "longitude",
+                                    "dispersal_method"
+                                ],
+                                "properties": {
+                                    "species_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "seeds_dispersed": {
+                                        "type": "integer",
+                                        "example": 500
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-08-27"
+                                    },
+                                    "site_name": {
+                                        "type": "string",
+                                        "example": "G-11 Margalla Trail"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 33.7294
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 73.0931
+                                    },
+                                    "dispersal_method": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Hand Broadcasting",
+                                            "Seed Bombing (aerial)",
+                                            "Seed Drill",
+                                            "Hydroseeding"
+                                        ]
+                                    },
+                                    "coverage_area_sqm": {
+                                        "type": "integer",
+                                        "example": 2000
+                                    },
+                                    "field_notes": {
+                                        "type": "string"
+                                    },
+                                    "photos[]": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Seeding activity logged successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/dashboard": {
+            "get": {
+                "tags": [
+                    "Admin Panel"
+                ],
+                "summary": "Get admin panel dashboard metrics",
+                "operationId": "2a0d9f36886f2ed80f4715f36ab8e283",
+                "responses": {
+                    "200": {
+                        "description": "Admin metrics retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/activities": {
+            "get": {
+                "tags": [
+                    "Admin Panel"
+                ],
+                "summary": "List activity verification queue",
+                "operationId": "9e6de5faeba5d5ddc373ba609d94f764",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "reported",
+                                "verified",
+                                "rejected"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Activities queue retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/activities/{id}/verify": {
+            "patch": {
+                "tags": [
+                    "Admin Panel"
+                ],
+                "summary": "Approve or reject an activity",
+                "operationId": "47baa9a0bef4e443677df14e3fa219a4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "verified",
+                                            "rejected"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Activity verification status updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/reports": {
+            "get": {
+                "tags": [
+                    "Admin Panel"
+                ],
+                "summary": "List environmental issue reports",
+                "operationId": "e850baf5f528cc19fd8a82fd858ae81d",
+                "responses": {
+                    "200": {
+                        "description": "Reports retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/reports/{id}/resolve": {
+            "patch": {
+                "tags": [
+                    "Admin Panel"
+                ],
+                "summary": "Update issue report resolution status",
+                "operationId": "a8a0885ecf8835b9e983f1c3cd2be810",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "investigating",
+                                            "resolved",
+                                            "dismissed"
+                                        ]
+                                    },
+                                    "resolution_notes": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Report status updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register a new user account",
+                "description": "Creates a new user profile and returns a bearer token.",
+                "operationId": "08136088c4862c313b35d6518bab8d3a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Ebad Mahar"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "ebad@grov.app"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Registration successful"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "1|laravel_sanctum_token"
+                                                },
+                                                "user": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Authenticate user",
+                "description": "Validates credentials and returns bearer token.",
+                "operationId": "99d66635c4992aeaa6aa44ff653d0563",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "ebad@grov.app"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful"
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/auth/forgot-password": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Request password recovery link",
+                "description": "Sends password recovery email if account exists.",
+                "operationId": "fea89d2766defe4ad877001920e3f289",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "ebad@grov.app"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Recovery email sent"
+                    }
+                }
+            }
+        },
+        "/auth/reset-password": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Reset user password",
+                "description": "Resets password using valid token.",
+                "operationId": "b8d03d5b689dcb65d3771f62d4f90a24",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "token",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "token": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password reset successful"
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Log out user",
+                "description": "Revokes current access token.",
+                "operationId": "6abf3b64a4bc7838d56346f05a5153af",
+                "responses": {
+                    "200": {
+                        "description": "Logout successful"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/community/tasks": {
+            "get": {
+                "tags": [
+                    "Community Hub & Tasks"
+                ],
+                "summary": "List active community tasks",
+                "operationId": "b69f013953772588c55b01ac3e8a0b50",
+                "responses": {
+                    "200": {
+                        "description": "Community tasks retrieved successfully"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Community Hub & Tasks"
+                ],
+                "summary": "Create a new community task",
+                "operationId": "95f96d1167ce584f14f4932d1a37c29c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "activity_type",
+                                    "site_name",
+                                    "latitude",
+                                    "longitude",
+                                    "date",
+                                    "start_time",
+                                    "description"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Margalla Trail Plantation"
+                                    },
+                                    "activity_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Tree Plantation",
+                                            "Seed Bombing",
+                                            "Monitoring Visit",
+                                            "Site Survey",
+                                            "Mixed Activities"
+                                        ]
+                                    },
+                                    "site_name": {
+                                        "type": "string",
+                                        "example": "Margalla Trail 3 Entrance"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "example": 33.7381
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "example": 73.065
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-08-30"
+                                    },
+                                    "start_time": {
+                                        "type": "string",
+                                        "example": "07:00:00"
+                                    },
+                                    "max_volunteers": {
+                                        "type": "integer",
+                                        "example": 30
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "cover_image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Community task created successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/community/tasks/{id}": {
+            "get": {
+                "tags": [
+                    "Community Hub & Tasks"
+                ],
+                "summary": "Get community task details and participants",
+                "operationId": "b4974a689a5d4a723fab709787afa6e3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Task details retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Task not found"
+                    }
+                }
+            }
+        },
+        "/community/tasks/{id}/join": {
+            "post": {
+                "tags": [
+                    "Community Hub & Tasks"
+                ],
+                "summary": "Join a community task",
+                "description": "Enforces max volunteers capacity check inside an atomic database transaction.",
+                "operationId": "3d1f34bdf8d4c8e71a6ed33b39c1b370",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Joined task successfully"
+                    },
+                    "400": {
+                        "description": "Task is full or already joined"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/community/tasks/{id}/leave": {
+            "post": {
+                "tags": [
+                    "Community Hub & Tasks"
+                ],
+                "summary": "Leave a community task",
+                "operationId": "49cda7eff640fb27e515dc851e4aecaf",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Left task successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/goals/monthly": {
+            "get": {
+                "tags": [
+                    "Monthly Community Goals"
+                ],
+                "summary": "Get monthly community goal progress",
+                "description": "Returns completion statistics for current month community goals.",
+                "operationId": "f436b07f96b42425cae5fc8978093859",
+                "responses": {
+                    "200": {
+                        "description": "Monthly goal retrieved successfully"
+                    }
+                }
+            }
+        },
+        "/leaderboard": {
+            "get": {
+                "tags": [
+                    "Leaderboard & Points"
+                ],
+                "summary": "Get regional leaderboard rankings",
+                "operationId": "5e41702f56aaaec9b321d4d648095413",
+                "parameters": [
+                    {
+                        "name": "tab",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "plantation",
+                                "seeding",
+                                "community"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "period",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "monthly",
+                                "all_time"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Leaderboard retrieved successfully"
+                    }
+                }
+            }
+        },
+        "/leaderboard/my-ranking": {
+            "get": {
+                "tags": [
+                    "Leaderboard & Points"
+                ],
+                "summary": "Get current user's detailed ranking breakdown",
+                "operationId": "a04995006dc4ed692f01a842e0a483f2",
+                "responses": {
+                    "200": {
+                        "description": "User ranking breakdown retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/activities/map": {
+            "get": {
+                "tags": [
+                    "Explore Map & Locations"
+                ],
+                "summary": "Get live restoration map site pins",
+                "description": "Returns activity site markers with coordinates, status, and activity counts.",
+                "operationId": "66f646a720c50eca125be300baf638e1",
+                "parameters": [
+                    {
+                        "name": "plantation",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "seeding",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "monitored",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "verified",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "bbox",
+                        "in": "query",
+                        "description": "Bounding box min_lat,min_lng,max_lat,max_lng",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Map site pins retrieved successfully"
+                    }
+                }
+            }
+        },
+        "/locations/explore": {
+            "get": {
+                "tags": [
+                    "Explore Map & Locations"
+                ],
+                "summary": "Get summary statistics for Explore Map floating bar",
+                "operationId": "b00a453073f1ee4cdbb71effd49d3473",
+                "responses": {
+                    "200": {
+                        "description": "Map summary stats retrieved successfully"
+                    }
+                }
+            }
+        },
+        "/monitoring/records": {
+            "get": {
+                "tags": [
+                    "Monitoring System"
+                ],
+                "summary": "List monitoring history records",
+                "operationId": "5d6ed0dbbab3363f17964fce31abd19d",
+                "responses": {
+                    "200": {
+                        "description": "Monitoring records retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Monitoring System"
+                ],
+                "summary": "Submit a monitoring record",
+                "description": "Records observation count, survival status, notes, and photos for a past activity.",
+                "operationId": "5f83763a73828ca532b4edd4719f788a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "activity_id",
+                                    "observation_date",
+                                    "observed_count",
+                                    "established_count",
+                                    "surviving_count",
+                                    "dead_count",
+                                    "condition"
+                                ],
+                                "properties": {
+                                    "activity_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "observation_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-08-27"
+                                    },
+                                    "observed_count": {
+                                        "type": "integer",
+                                        "example": 96
+                                    },
+                                    "established_count": {
+                                        "type": "integer",
+                                        "example": 82
+                                    },
+                                    "surviving_count": {
+                                        "type": "integer",
+                                        "example": 78
+                                    },
+                                    "dead_count": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "condition": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Good",
+                                            "Fair",
+                                            "Poor",
+                                            "Unknown"
+                                        ]
+                                    },
+                                    "notes": {
+                                        "type": "string"
+                                    },
+                                    "photos[]": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Monitoring record submitted successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/activities/{activity_id}/monitoring": {
+            "get": {
+                "tags": [
+                    "Monitoring System"
+                ],
+                "summary": "List monitoring observations for specific activity",
+                "operationId": "844c61f329194c82e6dc4ad79dacd88f",
+                "parameters": [
+                    {
+                        "name": "activity_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Activity monitoring records retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Activity not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/notifications": {
+            "get": {
+                "tags": [
+                    "Notifications System"
+                ],
+                "summary": "Get time-grouped notifications timeline",
+                "operationId": "b1274a2aaae8a4295a7e1925e8d8090f",
+                "responses": {
+                    "200": {
+                        "description": "Notifications retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/notifications/{id}/read": {
+            "patch": {
+                "tags": [
+                    "Notifications System"
+                ],
+                "summary": "Mark a single notification as read",
+                "operationId": "dea703083f3b271bc035110db4c25981",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notification marked as read"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/notifications/mark-all-read": {
+            "patch": {
+                "tags": [
+                    "Notifications System"
+                ],
+                "summary": "Mark all notifications as read",
+                "operationId": "cdec422d1cd44f5fa1e5cbd6f5c334c0",
+                "responses": {
+                    "200": {
+                        "description": "All notifications marked as read"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/ping": {
+            "get": {
+                "tags": [
+                    "System"
+                ],
+                "summary": "API Health Check",
+                "description": "Returns operational status of Grōv API v1.",
+                "operationId": "58f064e8d7d70ba6e89b43914cb04e11",
+                "responses": {
+                    "200": {
+                        "description": "API is operational",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Grōv API v1 is operational"
+                                        },
+                                        "timestamp": {
+                                            "type": "string",
+                                            "example": "2026-08-27T20:00:00Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/reports/my-reports": {
+            "get": {
+                "tags": [
+                    "Environmental Reports"
+                ],
+                "summary": "List issue reports submitted by current user",
+                "operationId": "3edf96512bd81b7ac8a37ab212ac1bda",
+                "responses": {
+                    "200": {
+                        "description": "User reports retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/reports": {
+            "post": {
+                "tags": [
+                    "Environmental Reports"
+                ],
+                "summary": "Submit an environmental issue report",
+                "description": "Logs issue category, severity, location, notes, and evidence photos.",
+                "operationId": "39a2e936857d7fa55026c1daac0f01d0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "site_name",
+                                    "category",
+                                    "severity",
+                                    "description"
+                                ],
+                                "properties": {
+                                    "activity_id": {
+                                        "type": "integer"
+                                    },
+                                    "site_name": {
+                                        "type": "string",
+                                        "example": "Margalla Hills Zone 2"
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Pest / Disease",
+                                            "Fire Risk",
+                                            "Illegal Dumping",
+                                            "Illegal Cutting",
+                                            "Flooding / Erosion",
+                                            "Other"
+                                        ]
+                                    },
+                                    "severity": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Low",
+                                            "Medium",
+                                            "High"
+                                        ]
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "photos[]": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Environmental report submitted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/species": {
+            "get": {
+                "tags": [
+                    "Species Catalogue"
+                ],
+                "summary": "List species catalogue",
+                "description": "Returns list of active plant and seed species with optional category and native filters.",
+                "operationId": "fdb5a82dd855a934911ae708fadcc872",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "conifer",
+                                "deciduous",
+                                "mangrove",
+                                "shrub",
+                                "mixed"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "is_native",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Species list retrieved successfully"
+                    }
+                }
+            }
+        },
+        "/species/{id}": {
+            "get": {
+                "tags": [
+                    "Species Catalogue"
+                ],
+                "summary": "Get species details",
+                "description": "Returns detailed information, suitable zones, description, and planting guidance for a single species.",
+                "operationId": "a3083ebe764bf360ec4ca5aeb1938fd3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Species details retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Species not found"
+                    }
+                }
+            }
+        },
+        "/user/profile": {
+            "get": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Get current user profile",
+                "description": "Returns profile details, statistics, role, and selected interests.",
+                "operationId": "fe3a194a4e23e01c363b58cb0491f778",
+                "responses": {
+                    "200": {
+                        "description": "Profile retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Update profile details",
+                "description": "Updates name, location, bio, or role.",
+                "operationId": "5be47c3f2bb37025d2bfe7754e6f2ee9",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "location": {
+                                        "type": "string"
+                                    },
+                                    "bio": {
+                                        "type": "string"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "enum": [
+                                            "volunteer",
+                                            "coordinator"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/avatar": {
+            "post": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Upload profile avatar photo",
+                "description": "Stores avatar image file and updates user avatar_path.",
+                "operationId": "93c05b6d6ba56d027806ca7563e9014b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "avatar": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Avatar uploaded successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/interests": {
+            "get": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "List all interest tags & user selected interests",
+                "operationId": "3d6abcf0f3de91523d6f631c532c827e",
+                "responses": {
+                    "200": {
+                        "description": "Interests retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Update user interest tag selection",
+                "operationId": "329bd590ca394c063857aa06750c2a4c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "interest_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Interests updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/settings": {
+            "put": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Update notification and application settings",
+                "operationId": "61971c4e67f43f9401386b0deb72da13",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "settings": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Settings updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/account": {
+            "delete": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Delete user account",
+                "description": "Soft deletes user account.",
+                "operationId": "f3430a8f77e34b69409b475029986cc5",
+                "responses": {
+                    "200": {
+                        "description": "Account deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Enter Sanctum bearer token in format: Bearer {token}",
+                "name": "Authorization",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Activities",
+            "description": "Activities"
+        },
+        {
+            "name": "Admin Panel",
+            "description": "Admin Panel"
+        },
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        },
+        {
+            "name": "Community Hub & Tasks",
+            "description": "Community Hub & Tasks"
+        },
+        {
+            "name": "Monthly Community Goals",
+            "description": "Monthly Community Goals"
+        },
+        {
+            "name": "Leaderboard & Points",
+            "description": "Leaderboard & Points"
+        },
+        {
+            "name": "Explore Map & Locations",
+            "description": "Explore Map & Locations"
+        },
+        {
+            "name": "Monitoring System",
+            "description": "Monitoring System"
+        },
+        {
+            "name": "Notifications System",
+            "description": "Notifications System"
+        },
+        {
+            "name": "System",
+            "description": "System"
+        },
+        {
+            "name": "Environmental Reports",
+            "description": "Environmental Reports"
+        },
+        {
+            "name": "Species Catalogue",
+            "description": "Species Catalogue"
+        },
+        {
+            "name": "User Profile",
+            "description": "User Profile"
+        }
+    ]
+}

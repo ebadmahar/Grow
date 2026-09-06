@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grōv — Report Issue</title>
+  <link rel="stylesheet" href="./shared-ios-glass.css"/>
+  <style>
+    .form-card {
+      background: var(--card); border: 1px solid var(--card-border);
+      border-radius: var(--r-xl); padding: 20px;
+      display: flex; flex-direction: column; gap: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+    .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .category-opt {
+      padding: 12px 10px; border-radius: var(--r-sm);
+      border: 1.5px solid var(--card-border); background: var(--surface);
+      cursor: pointer; text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      transition: all var(--dur) var(--ease);
+    }
+    .category-opt.selected { background: #FEE8E8; border-color: #FECACA; }
+    .category-opt .material-icons-round { font-size: 20px; color: var(--text-muted); }
+    .category-opt.selected .material-icons-round { color: #E53935; }
+    .category-opt span:last-child { font-size: 11px; font-weight: 700; color: var(--text-2); }
+    .category-opt.selected span:last-child { color: #C62828; }
+    .media-upload {
+      height: 100px; border: 1.5px dashed var(--card-border);
+      border-radius: var(--r-md); background: var(--surface);
+      display: grid; place-items: center; cursor: pointer;
+    }
+    .upload-inner { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .upload-inner .material-icons-round { font-size: 24px; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+<div class="app-shell screen">
+
+  <header class="app-header">
+    <a href="./create_activity.html" class="icon-btn">
+      <span class="material-icons-round">arrow_back</span>
+    </a>
+    <h1 class="header-title">Report Issue</h1>
+    <a href="./notifications.html" class="icon-btn">
+      <span class="material-icons-round">notifications</span>
+    </a>
+  </header>
+
+  <main class="p-page" style="display:flex;flex-direction:column;gap:14px;">
+
+    <div class="anim" style="display:flex;align-items:center;gap:10px;padding:14px;background:#FEE8E8;border:1px solid #FECACA;border-radius:var(--r-md);">
+      <span class="material-icons-round" style="color:#E53935;font-size:18px;">warning</span>
+      <p style="font-size:11px;color:#C62828;line-height:1.5;">Reports help the community protect restoration sites. Provide as much detail as possible including photos and GPS.</p>
+    </div>
+
+    <form action="./home_dashboard.html" class="form-card anim anim-2">
+
+      <div class="form-group">
+        <label class="form-label">Issue Category</label>
+        <div class="category-grid" id="categoryGrid">
+          <div class="category-opt selected" onclick="selectCat(this)">
+            <span class="material-icons-round">pest_control</span>
+            <span>Pest / Disease</span>
+          </div>
+          <div class="category-opt" onclick="selectCat(this)">
+            <span class="material-icons-round">local_fire_department</span>
+            <span>Fire Risk</span>
+          </div>
+          <div class="category-opt" onclick="selectCat(this)">
+            <span class="material-icons-round">delete</span>
+            <span>Illegal Dumping</span>
+          </div>
+          <div class="category-opt" onclick="selectCat(this)">
+            <span class="material-icons-round">cut</span>
+            <span>Illegal Cutting</span>
+          </div>
+          <div class="category-opt" onclick="selectCat(this)">
+            <span class="material-icons-round">water_damage</span>
+            <span>Flooding / Erosion</span>
+          </div>
+          <div class="category-opt" onclick="selectCat(this)">
+            <span class="material-icons-round">help</span>
+            <span>Other</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Site Name / Location</label>
+        <input type="text" class="form-input" placeholder="Where did you observe this?" value="Margalla Hills Zone 2"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Severity</label>
+        <select class="form-input form-select">
+          <option>Low — monitoring needed</option>
+          <option>Medium — action needed soon</option>
+          <option>High — urgent intervention</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-input form-textarea" placeholder="Describe what you observed, extent of damage, affected species..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Photos</label>
+        <div class="media-upload" id="mediaUpload">
+          <div class="upload-inner">
+            <span class="material-icons-round">add_photo_alternate</span>
+            <span style="font-size:11px;font-weight:600;color:var(--text-3);">Add Evidence Photos</span>
+          </div>
+        </div>
+        <input type="file" id="mediaInput" accept="image/*" multiple style="display:none;"/>
+      </div>
+
+      <button type="submit" class="btn" style="background:#E53935;color:#fff;margin-top:4px;">
+        <span class="material-icons-round" style="font-size:18px;">flag</span>
+        Submit Report
+      </button>
+    </form>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="./home_dashboard.html" class="nav-item"><span class="material-icons-round">home</span><span class="nav-label">Home</span></a>
+    <a href="./explore_map.html" class="nav-item"><span class="material-icons-round">explore</span><span class="nav-label">Map</span></a>
+    <a href="./create_activity.html" class="nav-fab"><span class="material-icons-round">add</span></a>
+    <a href="./community_hub.html" class="nav-item"><span class="material-icons-round">group</span><span class="nav-label">Community</span></a>
+    <a href="./user_profile.html" class="nav-item"><span class="material-icons-round">person</span><span class="nav-label">Profile</span></a>
+  </nav>
+</div>
+<script>
+function selectCat(el) {
+  document.querySelectorAll('.category-opt').forEach(function(o){ o.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+document.getElementById('mediaUpload').addEventListener('click', function() { document.getElementById('mediaInput').click(); });
+</script>
+</body>
+</html>
