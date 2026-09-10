@@ -1,0 +1,11 @@
+{
+  "verifiedAt": "2026-09-10T09:24:05.455Z",
+  "totalAssertions": 81,
+  "passedAssertions": 81,
+  "status": "PASSED",
+  "summary": {
+    "totalSourceRecords": 31,
+    "totalTransformedDocs": 31,
+    "bidirectionalMappings": 32
+  }
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "id": 4,
+    "tokenable_type": "App\\Models\\User",
+    "tokenable_id": 1,
+    "name": "auth_token",
+    "token": "034e36924fdb23c00cb97dff257b95e5810113e658b217a8b2a95b300d5a63e2",
+    "abilities": "[\"*\"]",
+    "last_used_at": "2026-09-06 18:26:47",
+    "expires_at": null,
+    "created_at": "2026-09-06 17:08:19",
+    "updated_at": "2026-09-06 18:26:47"
+  },
+  {
+    "id": 5,
+    "tokenable_type": "App\\Models\\User",
+    "tokenable_id": 1,
+    "name": "auth_token",
+    "token": "d0d0c4cfc469afe3ea7ad1be4e1da44d3933622e6c03daa344bf7fe67b9b2ee8",
+    "abilities": "[\"*\"]",
+    "last_used_at": "2026-09-06 18:01:30",
+    "expires_at": null,
+    "created_at": "2026-09-06 17:41:13",
+    "updated_at": "2026-09-06 18:01:30"
+  },
+  {
+    "id": 6,
+    "tokenable_type": "App\\Models\\User",
+    "tokenable_id": 1,
+    "name": "auth_token",
+    "token": "659de312dd6efb3a56f4df224de95443c252e8452715a70bee49bfb0254dab4e",
+    "abilities": "[\"*\"]",
+    "last_used_at": "2026-09-06 18:01:18",
+    "expires_at": null,
+    "created_at": "2026-09-06 17:58:15",
+    "updated_at": "2026-09-06 18:01:18"
+  }
+]

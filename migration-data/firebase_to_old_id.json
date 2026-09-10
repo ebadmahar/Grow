@@ -1,0 +1,130 @@
+{
+  "tree-plantation": {
+    "table": "interests",
+    "oldId": 1
+  },
+  "seed-bombing": {
+    "table": "interests",
+    "oldId": 2
+  },
+  "monitoring": {
+    "table": "interests",
+    "oldId": 3
+  },
+  "mangroves": {
+    "table": "interests",
+    "oldId": 4
+  },
+  "reforestation": {
+    "table": "interests",
+    "oldId": 5
+  },
+  "native-species": {
+    "table": "interests",
+    "oldId": 6
+  },
+  "wetlands": {
+    "table": "interests",
+    "oldId": 7
+  },
+  "urban-greening": {
+    "table": "interests",
+    "oldId": 8
+  },
+  "community-tasks": {
+    "table": "interests",
+    "oldId": 9
+  },
+  "data-collection": {
+    "table": "interests",
+    "oldId": 10
+  },
+  "chir-pine": {
+    "table": "species",
+    "oldId": 1
+  },
+  "phulai": {
+    "table": "species",
+    "oldId": 2
+  },
+  "sheesham": {
+    "table": "species",
+    "oldId": 3
+  },
+  "red-mangrove": {
+    "table": "species",
+    "oldId": 4
+  },
+  "ber": {
+    "table": "species",
+    "oldId": 5
+  },
+  "peepal": {
+    "table": "species",
+    "oldId": 6
+  },
+  "uid_user_1": {
+    "table": "users",
+    "oldId": 1
+  },
+  "uid_user_2": {
+    "table": "users",
+    "oldId": 2
+  },
+  "uid_user_3": {
+    "table": "users",
+    "oldId": 3
+  },
+  "site_1": {
+    "table": "locations",
+    "oldId": 1
+  },
+  "site_2": {
+    "table": "locations",
+    "oldId": 2
+  },
+  "site_3": {
+    "table": "locations",
+    "oldId": 3
+  },
+  "site_4": {
+    "table": "locations",
+    "oldId": 4
+  },
+  "site_5": {
+    "table": "locations",
+    "oldId": 5
+  },
+  "activity_1": {
+    "table": "activities",
+    "oldId": 1
+  },
+  "activity_2": {
+    "table": "activities",
+    "oldId": 2
+  },
+  "activity_3": {
+    "table": "activities",
+    "oldId": 3
+  },
+  "activity_4": {
+    "table": "activities",
+    "oldId": 4
+  },
+  "activity_5": {
+    "table": "activities",
+    "oldId": 5
+  },
+  "notification_1": {
+    "table": "notifications",
+    "oldId": 1
+  },
+  "point_1": {
+    "table": "user_points",
+    "oldId": 1
+  },
+  "goal_2026-09": {
+    "table": "community_goals",
+    "oldId": 1
+  }
+}

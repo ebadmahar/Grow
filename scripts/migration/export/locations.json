@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "name": "Islamabad Field Site (33.8225, 73.3052)",
+    "latitude": 33.822532,
+    "longitude": 73.305218,
+    "region": "Islamabad, Pakistan",
+    "accuracy_meters": 8,
+    "created_at": "2026-09-06 16:09:24",
+    "updated_at": "2026-09-06 16:09:24"
+  },
+  {
+    "id": 2,
+    "name": "Islamabad Field Site (33.7626, 73.1137)",
+    "latitude": 33.762599,
+    "longitude": 73.113697,
+    "region": "Islamabad, Pakistan",
+    "accuracy_meters": 8,
+    "created_at": "2026-09-06 16:09:27",
+    "updated_at": "2026-09-06 16:09:27"
+  },
+  {
+    "id": 3,
+    "name": "Islamabad Field Site (33.7316, 73.0811)",
+    "latitude": 33.731648,
+    "longitude": 73.081066,
+    "region": "Islamabad, Pakistan",
+    "accuracy_meters": 8,
+    "created_at": "2026-09-06 16:09:31",
+    "updated_at": "2026-09-06 16:09:31"
+  },
+  {
+    "id": 4,
+    "name": "Margalla Hills Zone 1",
+    "latitude": 33.65999,
+    "longitude": 73.0953,
+    "region": "Islamabad, Pakistan",
+    "accuracy_meters": 8,
+    "created_at": "2026-09-06 18:25:12",
+    "updated_at": "2026-09-06 18:25:12"
+  },
+  {
+    "id": 5,
+    "name": "Field Site (33.6607, 73.0957)",
+    "latitude": 33.66069012706405,
+    "longitude": 73.09573464307883,
+    "region": "Islamabad, Pakistan",
+    "accuracy_meters": 8,
+    "created_at": "2026-09-06 18:25:45",
+    "updated_at": "2026-09-06 18:25:45"
+  }
+]

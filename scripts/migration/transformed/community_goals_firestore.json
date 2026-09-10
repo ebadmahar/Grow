@@ -1,0 +1,16 @@
+[
+  {
+    "id": "goal_2026-09",
+    "year": 2026,
+    "month": 9,
+    "title": "Islamabad Monthly Ecosystem Restoration Target",
+    "targetTrees": 10000,
+    "targetSeeds": 5000,
+    "targetMonitoring": 500,
+    "targetParticipants": 200,
+    "status": "active",
+    "_legacyId": 1,
+    "_legacyTable": "community_goals",
+    "_migratedAt": "2026-09-10T09:17:49.278Z"
+  }
+]

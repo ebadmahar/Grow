@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "migration": "0001_01_01_000000_create_users_table",
+    "batch": 1
+  },
+  {
+    "id": 2,
+    "migration": "0001_01_01_000001_create_cache_table",
+    "batch": 1
+  },
+  {
+    "id": 3,
+    "migration": "0001_01_01_000002_create_jobs_table",
+    "batch": 1
+  },
+  {
+    "id": 4,
+    "migration": "2026_08_27_000001_create_interests_table",
+    "batch": 1
+  },
+  {
+    "id": 5,
+    "migration": "2026_08_27_000002_create_species_table",
+    "batch": 1
+  },
+  {
+    "id": 6,
+    "migration": "2026_08_27_000003_create_locations_table",
+    "batch": 1
+  },
+  {
+    "id": 7,
+    "migration": "2026_08_27_000004_create_activities_table",
+    "batch": 1
+  },
+  {
+    "id": 8,
+    "migration": "2026_08_27_000005_create_monitoring_records_table",
+    "batch": 1
+  },
+  {
+    "id": 9,
+    "migration": "2026_08_27_000006_create_community_tasks_table",
+    "batch": 1
+  },
+  {
+    "id": 10,
+    "migration": "2026_08_27_000007_create_community_goals_table",
+    "batch": 1
+  },
+  {
+    "id": 11,
+    "migration": "2026_08_27_000008_create_reports_table",
+    "batch": 1
+  },
+  {
+    "id": 12,
+    "migration": "2026_08_27_000009_create_activity_photos_table",
+    "batch": 1
+  },
+  {
+    "id": 13,
+    "migration": "2026_08_27_000010_create_notifications_table",
+    "batch": 1
+  },
+  {
+    "id": 14,
+    "migration": "2026_08_27_000011_create_user_points_table",
+    "batch": 1
+  },
+  {
+    "id": 15,
+    "migration": "2026_08_27_000012_create_personal_access_tokens_table",
+    "batch": 1
+  },
+  {
+    "id": 16,
+    "migration": "2026_09_05_000001_create_location_aqis_table",
+    "batch": 1
+  }
+]

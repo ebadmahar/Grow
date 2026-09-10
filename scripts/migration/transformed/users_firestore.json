@@ -1,0 +1,101 @@
+[
+  {
+    "uid": "uid_user_1",
+    "name": "Admin Lead",
+    "email": "admin@grov.app",
+    "passwordHash": "$2y$12$Bef834Gr6vLt5H6HNEhRL.dRLdKO3yqk3jNS21Zja9yyk7r1Vy25e",
+    "role": "admin",
+    "location": "F-6 / Margalla Zone, Islamabad",
+    "bio": "Grōv Platform Admin & Ecosystem Lead",
+    "avatarUrl": "http://192.168.1.3:8000/storage/avatars/LYsaYd0UMH74MyOWbCrLubPDlCLW76QbMYxFnVUO.jpg",
+    "settings": {
+      "emailNotifications": true,
+      "pushNotifications": true
+    },
+    "interestIds": [
+      "tree-plantation",
+      "seed-bombing",
+      "monitoring",
+      "mangroves",
+      "reforestation",
+      "native-species",
+      "wetlands",
+      "urban-greening",
+      "community-tasks",
+      "data-collection"
+    ],
+    "totalPlanted": 5,
+    "totalSeeded": 0,
+    "totalPoints": 50,
+    "monthlyPoints": 0,
+    "activitiesCount": 2,
+    "totpEnabled": false,
+    "mfaEnrolled": false,
+    "isDeleted": false,
+    "createdAt": "2026-09-06T08:32:38.000Z",
+    "_legacyId": 1,
+    "_legacyTable": "users",
+    "_migratedAt": "2026-09-10T09:17:49.278Z"
+  },
+  {
+    "uid": "uid_user_2",
+    "name": "Field Coordinator",
+    "email": "coordinator@grov.app",
+    "passwordHash": "$2y$12$41ei1cqpTM1S0rEOtLQ..e7ECZa0.jA4ehGUBRgWLKLJtwo4kFCTC",
+    "role": "coordinator",
+    "location": "G-11, Islamabad",
+    "bio": "Senior Field Restoration Lead for Margalla Hills Zone.",
+    "avatarUrl": null,
+    "settings": {
+      "emailNotifications": true,
+      "pushNotifications": true
+    },
+    "interestIds": [
+      "tree-plantation",
+      "seed-bombing",
+      "monitoring"
+    ],
+    "totalPlanted": 0,
+    "totalSeeded": 0,
+    "totalPoints": 0,
+    "monthlyPoints": 0,
+    "activitiesCount": 0,
+    "totpEnabled": false,
+    "mfaEnrolled": false,
+    "isDeleted": false,
+    "createdAt": "2026-09-06T08:32:38.000Z",
+    "_legacyId": 2,
+    "_legacyTable": "users",
+    "_migratedAt": "2026-09-10T09:17:49.278Z"
+  },
+  {
+    "uid": "uid_user_3",
+    "name": "Restoration Volunteer",
+    "email": "user@grov.app",
+    "passwordHash": "$2y$12$64Zgp1aIs9nrbGO6k6vHeOQtk1uE9Rnpbrxr2oPXwmrD00NdOtzD.",
+    "role": "volunteer",
+    "location": "F-7, Islamabad",
+    "bio": "Community restoration volunteer.",
+    "avatarUrl": null,
+    "settings": {
+      "emailNotifications": true,
+      "pushNotifications": true
+    },
+    "interestIds": [
+      "tree-plantation",
+      "seed-bombing"
+    ],
+    "totalPlanted": 0,
+    "totalSeeded": 0,
+    "totalPoints": 0,
+    "monthlyPoints": 0,
+    "activitiesCount": 0,
+    "totpEnabled": false,
+    "mfaEnrolled": false,
+    "isDeleted": false,
+    "createdAt": "2026-09-06T08:32:39.000Z",
+    "_legacyId": 3,
+    "_legacyTable": "users",
+    "_migratedAt": "2026-09-10T09:17:49.278Z"
+  }
+]

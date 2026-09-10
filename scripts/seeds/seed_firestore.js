@@ -13,9 +13,14 @@
 
 const fs = require('fs');
 const path = require('path');
-const admin = require('firebase-admin');
 
 const rootDir = path.resolve(__dirname, '../..');
+let admin;
+try {
+  admin = require('firebase-admin');
+} catch (e) {
+  admin = require(path.join(rootDir, 'grov-firebase/functions/node_modules/firebase-admin'));
+}
 
 // Load seed data files
 const speciesData = JSON.parse(fs.readFileSync(path.join(rootDir, 'seeds/species.json'), 'utf8'));

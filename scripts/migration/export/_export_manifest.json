@@ -1,0 +1,112 @@
+{
+  "exported_at": "2026-09-10T09:16:04.137140Z",
+  "source_db": "C:\\Users\\Ebad\\Desktop\\Grow Grov\\grov-backend\\database\\database.sqlite",
+  "total_tables": 26,
+  "total_records": 72,
+  "tables": {
+    "migrations": {
+      "count": 16,
+      "file": "scripts/migration/export/migrations.json"
+    },
+    "users": {
+      "count": 3,
+      "file": "scripts/migration/export/users.json"
+    },
+    "password_reset_tokens": {
+      "count": 0,
+      "file": "scripts/migration/export/password_reset_tokens.json"
+    },
+    "sessions": {
+      "count": 1,
+      "file": "scripts/migration/export/sessions.json"
+    },
+    "cache": {
+      "count": 0,
+      "file": "scripts/migration/export/cache.json"
+    },
+    "cache_locks": {
+      "count": 0,
+      "file": "scripts/migration/export/cache_locks.json"
+    },
+    "jobs": {
+      "count": 0,
+      "file": "scripts/migration/export/jobs.json"
+    },
+    "job_batches": {
+      "count": 0,
+      "file": "scripts/migration/export/job_batches.json"
+    },
+    "failed_jobs": {
+      "count": 0,
+      "file": "scripts/migration/export/failed_jobs.json"
+    },
+    "interests": {
+      "count": 10,
+      "file": "scripts/migration/export/interests.json"
+    },
+    "user_interests": {
+      "count": 15,
+      "file": "scripts/migration/export/user_interests.json"
+    },
+    "species": {
+      "count": 6,
+      "file": "scripts/migration/export/species.json"
+    },
+    "locations": {
+      "count": 5,
+      "file": "scripts/migration/export/locations.json"
+    },
+    "activities": {
+      "count": 5,
+      "file": "scripts/migration/export/activities.json"
+    },
+    "plantation_activities": {
+      "count": 5,
+      "file": "scripts/migration/export/plantation_activities.json"
+    },
+    "seeding_activities": {
+      "count": 0,
+      "file": "scripts/migration/export/seeding_activities.json"
+    },
+    "monitoring_records": {
+      "count": 0,
+      "file": "scripts/migration/export/monitoring_records.json"
+    },
+    "community_tasks": {
+      "count": 0,
+      "file": "scripts/migration/export/community_tasks.json"
+    },
+    "community_task_participants": {
+      "count": 0,
+      "file": "scripts/migration/export/community_task_participants.json"
+    },
+    "community_goals": {
+      "count": 1,
+      "file": "scripts/migration/export/community_goals.json"
+    },
+    "reports": {
+      "count": 0,
+      "file": "scripts/migration/export/reports.json"
+    },
+    "activity_photos": {
+      "count": 0,
+      "file": "scripts/migration/export/activity_photos.json"
+    },
+    "notifications": {
+      "count": 1,
+      "file": "scripts/migration/export/notifications.json"
+    },
+    "user_points": {
+      "count": 1,
+      "file": "scripts/migration/export/user_points.json"
+    },
+    "personal_access_tokens": {
+      "count": 3,
+      "file": "scripts/migration/export/personal_access_tokens.json"
+    },
+    "location_aqis": {
+      "count": 0,
+      "file": "scripts/migration/export/location_aqis.json"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "status": "dry_run_validated",
+  "totalDocuments": 32,
+  "collections": {
+    "species": 6,
+    "interests": 10,
+    "users": 3,
+    "verifiedSites": 5,
+    "activities": 5,
+    "notifications": 1,
+    "user_points": 1,
+    "community_goals": 1
+  },
+  "validatedAt": "2026-09-10T09:21:26.128Z"
+}

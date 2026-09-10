@@ -1,0 +1,13 @@
+[
+  {
+    "id": "point_1",
+    "userId": "uid_user_1",
+    "activityId": "activity_4",
+    "points": 50,
+    "reason": "Tree Plantation Activity (5 saplings logged)",
+    "createdAt": "2026-09-06T13:25:20.000Z",
+    "_legacyId": 1,
+    "_legacyTable": "user_points",
+    "_migratedAt": "2026-09-10T09:17:49.278Z"
+  }
+]

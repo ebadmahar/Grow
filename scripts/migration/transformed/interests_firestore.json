@@ -1,0 +1,82 @@
+[
+  {
+    "id": "tree-plantation",
+    "name": "Tree Plantation",
+    "order": 1,
+    "_legacyId": 1,
+    "_legacyTable": "interests",
+    "_migratedAt": "2026-09-10T09:17:49.278Z"
+  },
+  {
+    "id": "seed-bombing",
+    "name": "Seed Bombing",
+    "order": 2,
+    "_legacyId": 2,
+    "_legacyTable": "interests",
+    "_migratedAt": "2026-09-10T09:17:49.278Z"
+  },
+  {
+    "id": "monitoring",
+    "name": "Monitoring",
+    "order": 3,
+    "_legacyId": 3,
+    "_legacyTable": "interests",
+    "_migratedAt": "2026-09-10T09:17:49.278Z"
+  },
+  {
+    "id": "mangroves",
+    "name": "Mangroves",
+    "order": 4,
+    "_legacyId": 4,
+    "_legacyTable": "interests",
+    "_migratedAt": "2026-09-10T09:17:49.278Z"
+  },
+  {
+    "id": "reforestation",
+    "name": "Reforestation",
+    "order": 5,
+    "_legacyId": 5,
+    "_legacyTable": "interests",
+    "_migratedAt": "2026-09-10T09:17:49.278Z"
+  },
+  {
+    "id": "native-species",
+    "name": "Native Species",
+    "order": 6,
+    "_legacyId": 6,
+    "_legacyTable": "interests",
+    "_migratedAt": "2026-09-10T09:17:49.278Z"
+  },
+  {
+    "id": "wetlands",
+    "name": "Wetlands",
+    "order": 7,
+    "_legacyId": 7,
+    "_legacyTable": "interests",
+    "_migratedAt": "2026-09-10T09:17:49.278Z"
+  },
+  {
+    "id": "urban-greening",
+    "name": "Urban Greening",
+    "order": 8,
+    "_legacyId": 8,
+    "_legacyTable": "interests",
+    "_migratedAt": "2026-09-10T09:17:49.278Z"
+  },
+  {
+    "id": "community-tasks",
+    "name": "Community Tasks",
+    "order": 9,
+    "_legacyId": 9,
+    "_legacyTable": "interests",
+    "_migratedAt": "2026-09-10T09:17:49.278Z"
+  },
+  {
+    "id": "data-collection",
+    "name": "Data Collection",
+    "order": 10,
+    "_legacyId": 10,
+    "_legacyTable": "interests",
+    "_migratedAt": "2026-09-10T09:17:49.278Z"
+  }
+]

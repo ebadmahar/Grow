@@ -1,0 +1,7 @@
+{
+  "status": "dry_run_validated",
+  "totalUsers": 3,
+  "hashAlgorithm": "BCRYPT",
+  "rounds": 12,
+  "validatedAt": "2026-09-10T09:20:19.093Z"
+}

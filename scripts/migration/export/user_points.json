@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "activity_id": 4,
+    "task_id": null,
+    "points": 50,
+    "reason": "Tree Plantation Activity (5 saplings logged)",
+    "created_at": "2026-09-06 18:25:20",
+    "updated_at": "2026-09-06 18:25:20"
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "type": "avatar",
+    "sourceFile": "C:\\Users\\Ebad\\Desktop\\Grow Grov\\grov-backend\\storage\\app\\public\\avatars\\LYsaYd0UMH74MyOWbCrLubPDlCLW76QbMYxFnVUO.jpg",
+    "fileName": "LYsaYd0UMH74MyOWbCrLubPDlCLW76QbMYxFnVUO.jpg",
+    "fileSizeBytes": 17242,
+    "mimeType": "image/jpeg",
+    "md5Hash": "053e41dd96c5c5fa5d69982e9f2263ac",
+    "targetStoragePath": "avatars/uid_user_1/avatar.jpg",
+    "targetUid": "uid_user_1"
+  }
+]
