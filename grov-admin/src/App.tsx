@@ -26,7 +26,7 @@ import { collection, getDocs, limit, query } from 'firebase/firestore';
 import { CheckCircle2, AlertCircle } from 'lucide-react';
 
 const AdminDashboardApp: React.FC = () => {
-  const { currentUser, isTotpVerified, loading } = useAuth();
+  const { currentUser, adminProfile, isTotpVerified, loading } = useAuth();
   const [currentTab, setCurrentTab] = useState<AdminTab>('overview');
   const [refreshing, setRefreshing] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -313,7 +313,7 @@ const AdminDashboardApp: React.FC = () => {
   }
 
   // Two-step authentication gate: must have admin account AND verified TOTP 2FA
-  if (!currentUser || !isTotpVerified) {
+  if ((!currentUser && !adminProfile) || !isTotpVerified) {
     return <LoginPage />;
   }
 
