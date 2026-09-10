@@ -2,23 +2,31 @@ import axios from 'axios';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
+import { DEFAULT_FUNCTIONS_BASE_URL } from '../firebase/config';
 
 const getApiBaseUrl = () => {
-  if (Platform.OS === 'web') {
-    if (typeof window !== 'undefined' && window.location && window.location.hostname) {
-      return `http://${window.location.hostname}:8000/api/v1`;
-    }
-    return 'http://192.168.1.10:8000/api/v1';
+  // If explicitly overridden via environment variable
+  if (process.env.EXPO_PUBLIC_FUNCTIONS_BASE_URL) {
+    return process.env.EXPO_PUBLIC_FUNCTIONS_BASE_URL;
   }
 
+  // If running in local web development
+  if (Platform.OS === 'web') {
+    if (typeof window !== 'undefined' && window.location && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      return 'http://127.0.0.1:5001/grov-staging/asia-south1';
+    }
+    return DEFAULT_FUNCTIONS_BASE_URL;
+  }
+
+  // If running in local native development with Metro bundler
   if (Constants.expoConfig?.hostUri) {
     const host = Constants.expoConfig.hostUri.split(':')[0];
-    if (host) {
-      return `http://${host}:8000/api/v1`;
+    if (host && host !== 'localhost' && host !== '127.0.0.1') {
+      return `http://${host}:5001/grov-staging/asia-south1`;
     }
   }
 
-  return 'http://192.168.1.10:8000/api/v1';
+  return DEFAULT_FUNCTIONS_BASE_URL;
 };
 
 export const DEFAULT_API_BASE_URL = getApiBaseUrl();
@@ -37,9 +45,6 @@ export const setCustomBackendUrl = async (url: string): Promise<void> => {
     if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
       cleanUrl = `http://${cleanUrl}`;
     }
-    if (!cleanUrl.endsWith('/api/v1')) {
-      cleanUrl = cleanUrl.replace(/\/+$/, '') + '/api/v1';
-    }
     await AsyncStorage.setItem('custom_backend_url', cleanUrl);
     apiClient.defaults.baseURL = cleanUrl;
   } catch (e) {
@@ -51,11 +56,17 @@ export let API_BASE_URL = DEFAULT_API_BASE_URL;
 
 export const resolveImageUrl = (url?: string | null): string | undefined => {
   if (!url) return undefined;
+  // Firebase Storage / Cloud Storage direct download URLs
+  if (
+    url.startsWith('https://firebasestorage.googleapis.com') ||
+    url.startsWith('https://storage.googleapis.com') ||
+    url.startsWith('http://') ||
+    url.startsWith('https://')
+  ) {
+    return url;
+  }
   const currentBase = apiClient.defaults.baseURL || API_BASE_URL;
   const backendBase = currentBase.replace(/\/api\/v1\/?$/, '');
-  if (url.startsWith('http://localhost:8000') || url.startsWith('http://127.0.0.1:8000')) {
-    return url.replace(/^http:\/\/(localhost|127\.0\.0\.1):8000/, backendBase);
-  }
   if (url.startsWith('/storage')) {
     return `${backendBase}${url}`;
   }
@@ -68,7 +79,7 @@ export const apiClient = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  timeout: 12000,
+  timeout: 15000,
 });
 
 export const getStoredToken = async (): Promise<string | null> => {
@@ -119,7 +130,7 @@ apiClient.interceptors.response.use(
     // Extract a useful message from the response body
     const data = error.response?.data;
     if (data) {
-      let msg = data.message || 'Something went wrong';
+      let msg = data.message || data.error || 'Something went wrong';
       if (data.errors) {
         const firstError = Object.values(data.errors as Record<string, string[]>)
           .flat()
@@ -128,13 +139,13 @@ apiClient.interceptors.response.use(
       }
       return Promise.reject(new Error(msg));
     }
-    
-    // Handle Network Error (connection timeout, host unreachable, Wi-Fi mismatch)
+
+    // Handle Network Error
     if (!error.response && (error.message === 'Network Error' || error.code === 'ECONNABORTED')) {
       const currentUrl = apiClient.defaults.baseURL || DEFAULT_API_BASE_URL;
       return Promise.reject(
         new Error(
-          `Cannot connect to backend server at ${currentUrl}.\n\nEnsure your device is connected to the same Wi-Fi network as the server, or tap the Server Settings icon to change the Server IP.`
+          `Cannot connect to Grōv Cloud backend at ${currentUrl}.\n\nEnsure your device has an active internet connection.`
         )
       );
     }

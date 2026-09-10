@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase/config';
 import { User } from '../types/models';
 import { authApi } from '../api/authApi';
 import { userApi } from '../api/userApi';
@@ -24,7 +26,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    bootstrapAuth();
+    // Listen for Firebase Auth state changes
+    const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
+      if (fbUser) {
+        try {
+          const idToken = await fbUser.getIdToken();
+          await setStoredToken(idToken);
+          setToken(idToken);
+
+          const res = await userApi.getProfile();
+          if (res.success && res.data?.user) {
+            const userWithAvatar = await processUserWithCache(res.data.user);
+            setUser(userWithAvatar);
+          }
+        } catch (e) {
+          console.log('[AuthContext] Error rehydrating Firebase session', e);
+        }
+      } else {
+        // If no active Firebase user, check AsyncStorage token fallback
+        const storedToken = await getStoredToken();
+        if (!storedToken) {
+          setUser(null);
+          setToken(null);
+        }
+      }
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const processUserWithCache = async (u: User | null): Promise<User | null> => {
@@ -47,27 +76,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.warn('Failed to get cached avatar', e);
       }
       return u;
-    }
-  };
-
-  const bootstrapAuth = async () => {
-    try {
-      const storedToken = await getStoredToken();
-      if (storedToken) {
-        setToken(storedToken);
-        const res = await userApi.getProfile();
-        if (res.success) {
-          const userWithAvatar = await processUserWithCache(res.data.user);
-          setUser(userWithAvatar);
-        }
-      }
-    } catch (e) {
-      console.log('Failed to restore session token', e);
-      await clearStoredToken();
-      setToken(null);
-      setUser(null);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -114,7 +122,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const refreshProfile = async () => {
     try {
       const res = await userApi.getProfile();
-      if (res.success) {
+      if (res.success && res.data?.user) {
         const userWithAvatar = await processUserWithCache(res.data.user);
         setUser(userWithAvatar);
       }
