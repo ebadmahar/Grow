@@ -1,116 +1,113 @@
-﻿# Grōv — Load Testing Strategy
+# Grōv — Load Testing Strategy (Revised)
 
-## Goal: Validate the Firebase architecture handles 25,000 concurrent users
+## Core Mandate
+1. **Design & Prove, Never Assume**: Firebase architecture is NOT assumed to be automatically safe, zero-crash, or immune to concurrency bottlenecks at 25,000+ concurrent users. Scalability must be deliberately architected and rigorously proven across all critical workflows under realistic load.
+2. **Strict Testing Phase Protection**: Under no circumstances will the load testing, security verification, migration validation, or regression testing periods be reduced or compressed to satisfy an estimated 27-day timeline. If issues arise, the implementation schedule extends until all test gates pass with 100% compliance.
 
-## Tools
-- k6 (https://k6.io) — open source HTTP load testing
-- Firebase Console metrics — real-time Firestore reads/writes, CF executions
-- Google Cloud Monitoring — Cloud Function latency, error rates
+---
 
-## Test Environment
-- All load tests run against grov-staging (NOT production)
-- Mobile app simulator: k6 scripts simulate the full user session flow
-- Staging must have realistic data: at minimum 1,000 seeded users and 5,000 activities
+## Tools & Infrastructure
+- **k6** (open source HTTP/WebSocket load testing) orchestrated across distributed test runners
+- **Google Cloud Monitoring / Cloud Trace**: Cloud Function latency, concurrency, memory, cold starts, error distribution
+- **Firebase Console Metrics**: Real-time Firestore operations, connection saturation, rate limit encounters
+- **Firebase Performance Monitoring & Crashlytics**: Client-side metric collection
+
+## Test Environment: `grov-staging`
+- Load tests execute strictly against the isolated staging project (`grov-staging`), NEVER production.
+- Database must be pre-seeded with realistic production-scale volume:
+  - 25,000+ user records with active profiles
+  - 10,000+ activity records and photos
+  - 500+ verified sites across diverse geographic coordinates
+  - Pre-computed leaderboard, global stats, and AQI documents
+
+---
 
 ## Test Scenarios
 
-### Scenario A — Authentication Burst
-Simulates N users opening the app and logging in simultaneously.
-Steps per virtual user:
-  1. POST Firebase Auth signInWithEmailAndPassword (via REST)
-  2. GET Firestore users/{uid} (profile read)
-  3. GET Firestore stats/global (home stats)
-  4. GET Firestore stats/aqi (AQI widget)
-  5. GET Firestore leaderboard/monthly (home leaderboard preview)
+### Scenario A — Authentication & Session Rehydration Burst
+Simulates N users opening the app simultaneously:
+1. Firebase Auth token acquisition / verification (`signInWithEmailAndPassword` or token refresh)
+2. Direct Firestore SDK read of `users/{uid}` (profile)
+3. Direct Firestore SDK read of `stats/global` (pre-computed home stats)
+4. Direct Firestore SDK read of `stats/aqi` (cached AQI widget)
+5. Direct Firestore SDK read of `leaderboard/monthly` (home preview)
 
-### Scenario B — Home + Map Load
-Simulates N users loading the home screen and explore map.
-Steps per virtual user:
-  1. (Already authenticated — use pre-generated ID tokens)
-  2. GET Firestore stats/global
-  3. GET Firestore stats/aqi
-  4. GET Firestore leaderboard/monthly
-  5. GET Firestore activities (map pins — with bbox filter)
-  6. GET Firestore config/monthlyGoals/current
+### Scenario B — Viewport Map Exploration (Reworked)
+Simulates N users navigating the interactive map:
+1. Direct Firestore SDK viewport bounding-box query against `verifiedSites`:
+   - Query: `status == 'active'` within lat/lng bounding box, `limit(100)`
+2. Direct Firestore SDK read of `config/monthlyGoals/current`
+3. Optional site drill-down (10% of users tap a pin):
+   - Query `activities` where `siteId == tappedSiteId`, `limit(20)`
 
-### Scenario C — Activity Submission Burst
-Simulates N users submitting plantation activities simultaneously.
-Steps per virtual user:
-  1. POST Cloud Function logPlantation (with image upload to Storage)
-  2. GET Firestore activities/{newId} (verify created)
+### Scenario C — Activity Submission Burst (High Concurrency Mutation)
+Simulates concurrent volunteer field submissions:
+1. Multipart upload of evidence photo (5MB simulated JPEG) to Firebase Storage
+2. POST to Cloud Function `logPlantation` / `logSeeding` (including GPS coordinates, species ID, quantity, idempotency key)
+3. Cloud Function validates Islamabad GPS bounds, commits atomic activity document, and responds with new ID
 
-### Scenario D — Broadcast Notification
-Admin triggers broadcast while 25K users are connected.
-Steps:
-  1. POST Cloud Function broadcastNotification (admin token)
-  2. Measure: FCM delivery time, Firestore notification doc creation time
-  3. Verify: 100 random users' Firestore notification docs created
+### Scenario D — System Broadcast Notification under 25K Concurrency
+Admin sends a critical alert while 25K users are actively connected:
+1. Admin POST to Cloud Function `broadcastNotification`
+2. Measure: Server processing duration, FCM topic `all_users` fan-out throughput, and client delivery timing
 
-### Scenario E — Leaderboard Burst
-Simulates 25K users loading the leaderboard simultaneously.
-Steps per virtual user:
-  1. GET Firestore leaderboard/all_time
-  2. GET Firestore leaderboard/monthly
-  3. GET Firestore leaderboard/weekly
+### Scenario E — Leaderboard Contention Burst
+Simulates peak traffic checking competitive rankings:
+1. Concurrent reads of `leaderboard/all_time`, `leaderboard/monthly`, `leaderboard/weekly`
+2. User ranking query: direct read of user document stats
 
-## Test Stages
+---
 
-| Stage | VUs | Duration | Scenarios |
+## Staged Concurrency Progression
+
+| Stage | Virtual Users (VUs) | Duration | Scenarios | Target Focus |
+|---|---|---|---|---|
+| **Smoke** | 25 | 3 min | A, B | Protocol & auth validation |
+| **Baseline** | 250 | 5 min | A, B | Normal operating profile |
+| **Load 1** | 1,000 | 10 min | A, B, C | Mid-scale volunteer drive |
+| **Load 2** | 2,500 | 15 min | A, B, C, E | Regional plantation campaign |
+| **Load 3** | 5,000 | 20 min | A, B, C, D, E | Large community task event |
+| **Load 4** | 10,000 | 20 min | A, B, C, E | City-wide climate drive peak |
+| **Peak Load** | 25,000 | 15 min | A, B, C, D, E | Maximum targeted concurrent concurrency |
+| **Spike** | 1,000 ➔ 25,000 ➔ 1,000 | 10 min | A, B | Immediate burst stress response |
+| **Soak / Endurance** | 2,500 | 120 min | A, B, C | Memory leaks, connection degradation, resource exhaustion |
+
+---
+
+## Strict PASS/FAIL Thresholds (25K Concurrent Users)
+
+Every threshold below is a non-negotiable quality gate. A single failed threshold blocks production rollout:
+
+| Category | Metric | PASS Threshold | FAIL Threshold |
 |---|---|---|---|
-| Smoke | 10 | 2 min | A |
-| Baseline | 100 | 5 min | A, B |
-| Load 1 | 500 | 10 min | A, B, C |
-| Load 2 | 1,000 | 10 min | A, B, C, E |
-| Load 3 | 2,500 | 10 min | A, B, D, E |
-| Load 4 | 5,000 | 10 min | A, B, C, E |
-| Load 5 | 10,000 | 15 min | A, B, E |
-| Spike | 25,000 | 5 min | A, B, E |
-| Endurance | 1,000 | 60 min | A, B, C |
+| **Firestore Direct Reads** | P50 Latency | < 100 ms | >= 100 ms |
+| | P95 Latency | < 300 ms | >= 300 ms |
+| | P99 Latency | < 600 ms | >= 600 ms |
+| **Cloud Functions HTTPS** | P50 Latency | < 350 ms | >= 350 ms |
+| | P95 Latency | < 1,500 ms | >= 1,500 ms |
+| | P99 Latency | < 3,000 ms | >= 3,000 ms |
+| **Firebase Auth Operations** | P50 Latency | < 400 ms | >= 400 ms |
+| | P95 Latency | < 800 ms | >= 800 ms |
+| | P99 Latency | < 1,500 ms | >= 1,500 ms |
+| **Storage Performance** | P95 Upload (5MB image) | < 3,500 ms | >= 3,500 ms |
+| | P99 Upload (5MB image) | < 6,000 ms | >= 6,000 ms |
+| | Upload Error Rate (5xx) | 0.00% | > 0.00% |
+| **System Error Rates** | Total HTTP / API Error Rate | < 0.10% | >= 0.10% |
+| | Firebase Auth Failures (non-user error) | < 0.05% | >= 0.05% |
+| | Cloud Function Errors (5xx / crashes) | < 0.05% | >= 0.05% |
+| | Cloud Function Timeout Rate | < 0.01% | >= 0.01% |
+| **Firestore Utilization** | Quota / Rate-Limit Errors (HTTP 429 / RESOURCE_EXHAUSTED) | Exactly 0 | >= 1 |
+| | Unhandled Document Contention / Retry Failures | Exactly 0 | >= 1 |
+| **Crash & Client Health** | Client Crash-Free Sessions (Crashlytics) | >= 99.9% | < 99.9% |
+| | React Native UI Frame Rate during data fetch | >= 55 FPS | < 55 FPS |
+| | Client Memory Leak / Growth per session | < 25 MB overhead | >= 25 MB |
 
-## Pass/Fail Criteria
+---
 
-| Metric | Threshold |
-|---|---|
-| HTTP error rate | < 1% |
-| P95 latency — Firestore reads | < 500ms |
-| P95 latency — Cloud Function HTTPS | < 2000ms |
-| P95 latency — Firebase Auth | < 1000ms |
-| Firebase Auth failures | < 0.1% |
-| Cloud Function timeout rate | < 0.1% |
-| Firestore quota errors | 0 |
-
-## Measurements to Record per Stage
-
-- P50, P95, P99 latency (Firestore reads, Cloud Functions, Auth)
-- Error rate (HTTP 4xx, 5xx)
-- Firebase Console: reads/writes per second peak
-- Cloud Function: execution count, average duration, error count
-- Firebase Storage: upload throughput
-- FCM delivery rate (Scenario D)
-
-## Expected Results (Based on Architecture Analysis)
-
-| Scenario | Expected P95 Latency | Confidence |
-|---|---|---|
-| Auth (25K burst) | < 800ms | High — Firebase Auth auto-scales |
-| Profile read (25K) | < 300ms | High — individual doc reads |
-| Leaderboard (25K) | < 200ms | High — single pre-computed doc |
-| Home stats (25K) | < 200ms | High — single pre-computed doc |
-| Map pins (25K) | < 500ms | Medium — indexed query |
-| Activity submission (25K) | < 3000ms | Medium — CF + Storage |
-| Broadcast (25K) | < 5000ms (total delivery) | High — FCM topic |
-
-## Load Test Scripts Location
-
-scripts/load-testing/
-  k6/
-    scenario_a_auth_burst.js
-    scenario_b_home_map.js
-    scenario_c_activity_submission.js
-    scenario_d_broadcast.js
-    scenario_e_leaderboard.js
-    shared/
-      auth_helper.js        <- pre-generate ID tokens for load tests
-      config.js             <- staging endpoints, test user pool
-  results/
-    (load test results stored here after each run)
+## Artifacts & Reporting
+1. Automated k6 HTML and JSON summaries generated after each test run
+2. Cloud Monitoring dashboard snapshot capturing:
+   - Peak CPU and memory utilization across Cloud Function instances
+   - Active Firestore connections and read/write QPS
+   - FCM queue drain rate
+3. Final Load Test Certification Document signed off before Phase 9 production rollout.

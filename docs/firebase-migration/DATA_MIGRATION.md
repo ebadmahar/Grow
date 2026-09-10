@@ -1,143 +1,103 @@
-﻿# Grōv — Data Migration Plan
+# Grōv — Data Migration Plan (Revised)
 
-## Source: SQLite database at grov-backend/database/database.sqlite
+## Source: SQLite database at `grov-backend/database/database.sqlite`
 ## Destination: Firebase (Auth + Firestore + Storage)
-## Constraint: Original database must NOT be deleted until migration is fully validated
+## Absolute Constraints:
+1. **Zero Data Loss & Permanent Traceability**: Every migrated record MUST have an unambiguous mapping between its legacy SQL integer ID and its new Firebase document ID.
+2. **Laravel Backend & DB Preservation**: `grov-backend/` and `grov-backend/database/database.sqlite` remain 100% untouched and are NEVER deleted during or after the migration.
+3. **No Shortened Validation**: The migration verification and validation phase is protected and cannot be compressed.
+
+---
 
 ## Migration Pipeline
 
-Stage 1: Export
-  Script: scripts/migration/01_export_sqlite.py
-  Input:  grov-backend/database/database.sqlite
-  Output: scripts/migration/export/
-    users.json
-    interests.json
-    user_interests.json
-    species.json
-    locations.json
-    activities.json
-    plantation_activities.json
-    seeding_activities.json
-    activity_photos.json
-    monitoring_records.json
-    community_tasks.json
-    community_task_participants.json
-    community_goals.json
-    reports.json
-    notifications.json
-    user_points.json
+### Stage 1: SQLite Extraction
+- **Script**: `scripts/migration/01_export_sqlite.py`
+- **Source**: `grov-backend/database/database.sqlite` (read-only SQLite connection)
+- **Output**: `scripts/migration/export/` (individual JSON exports for all 16 tables)
 
-Stage 2: Transform
-  Script: scripts/migration/02_transform.js
-  Input:  scripts/migration/export/*.json
-  Output: scripts/migration/transformed/
-    id_mapping.json              <- maps old SQL integer IDs to new Firestore doc IDs
-    users_firestore.json
-    activities_firestore.json    <- plantation + seeding merged into activity doc
-    species_firestore.json
-    community_tasks_firestore.json
-    notifications_firestore.json
-    reports_firestore.json
-    user_points_firestore.json
-    monitoring_records_firestore.json
+### Stage 2: Transformation & Bidirectional ID Mapping
+- **Script**: `scripts/migration/02_transform.js`
+- **Outputs**:
+  - `migration-data/id_mapping.json` (Master map: `{ [tableName]: { [oldSqlId]: newFirestoreDocId } }`)
+  - `migration-data/firebase_to_old_id.json` (Reverse map: `{ [newFirestoreDocId]: { table: tableName, oldId: oldSqlId } }`)
+  - Transformed collection payloads for Firestore import
 
-  Transformations performed:
-  - Generate Firestore document IDs (UUID v4) for all records
-  - Build id_mapping.json (old_integer_id -> new_doc_id) for FK resolution
-  - Merge plantation_activities and seeding_activities INTO activities doc
-  - Resolve all FK integers to new Firestore doc IDs using id_mapping.json
-  - Convert SQL timestamps (YYYY-MM-DD HH:MM:SS) to ISO 8601 strings
-  - Convert SQL boolean integers (0/1) to JS booleans
-  - Convert NULL to null
-  - Denormalize: copy userName, userAvatarUrl, speciesName into activity docs
-  - Denormalize: copy creatorName into communityTasks docs
-  - Denormalize: copy reporterName into reports docs
-  - Convert avatar_path (Laravel local URL) to placeholder (real URL after Stage 5)
+**Key Transformation Rules**:
+1. **Document-Level Traceability Metadata**:
+   Every transformed record explicitly includes:
+   ```json
+   {
+     "_legacyId": 142,
+     "_legacyTable": "activities",
+     "_migratedAt": "2026-09-10T12:00:00Z"
+   }
+   ```
+2. **Foreign Key Resolution**:
+   All relational integer foreign keys (e.g., `user_id`, `species_id`, `location_id`, `activity_id`) are mapped to their corresponding Firestore document IDs via `id_mapping.json`.
+3. **Table Consolidation**:
+   - `plantation_activities` and `seeding_activities` are merged directly into their parent `activities` documents.
+   - `user_interests` pivot table is collapsed into `users/{uid}.interestIds: string[]`.
+4. **Pre-aggregating `verifiedSites`**:
+   - Synthesizes `verifiedSites` documents from unique `locations` and aggregates verified `activities` at each location.
+   - Calculates `activityCount`, `totalTreesPlanted`, `totalSeedsDispersed`, and assigns geohashes for viewport querying.
+5. **FCM Tokens**:
+   - Legacy tokens (if present) are mapped into individual documents under `users/{uid}/devices/{deviceId}` rather than an unbounded array.
 
-Stage 3: Firebase Auth User Import
-  Script: scripts/migration/03_import_auth.js
-  Method: admin.auth().importUsers() with bcryptRound: 12
-  Note:   Laravel bcrypt hashes ARE compatible with Firebase Auth bcrypt import.
-          Users will be able to log in with their existing passwords.
-  Input:  users_firestore.json
-  Output: auth_import_results.json (success/failure per user)
+### Stage 3: Firebase Auth Import (Bcrypt Preservation)
+- **Script**: `scripts/migration/03_import_auth.js`
+- **Method**: Firebase Admin SDK `admin.auth().importUsers()`
+- **Parameters**: `hash: user.password`, `algorithm: 'BCRYPT'`, `rounds: 12`.
+- Laravel's `$2y$` bcrypt hashes are 100% compatible with Firebase Auth's bcrypt engine.
+- Users preserve their existing passwords with zero friction.
 
-Stage 4: Firestore Import
-  Script: scripts/migration/04_import_firestore.js
-  Method: Batch writes (max 500 per batch, chunked)
-  Order:
-    1. species (referenced by activities)
-    2. interests (referenced by users)
-    3. users (after Auth import so UIDs match)
-    4. activities (with plantation/seeding data merged)
-    5. activities/{id}/photos subcollection
-    6. activities/{id}/monitoringRecords subcollection
-    7. communityTasks (references users)
-    8. communityTasks/{id}/participants subcollection
-    9. notifications
-    10. reports
-    11. userPoints
-    12. config/monthlyGoals documents
-    13. stats/global (computed from imported data)
-    14. leaderboard/all_time (computed from imported data)
-    15. leaderboard/monthly (computed from imported data)
+### Stage 4: Firestore Chunked Batch Import
+- **Script**: `scripts/migration/04_import_firestore.js`
+- **Method**: Atomic batches of 400 documents (well below Firestore's 500 limit).
+- **Import Sequence** (respects foreign key references):
+  1. `species`
+  2. `interests`
+  3. `users` (UID matches Firebase Auth UIDs)
+  4. `verifiedSites`
+  5. `activities` (merged with plantation/seeding details)
+  6. Subcollections: `activities/{id}/photos` & `activities/{id}/monitoringRecords`
+  7. `communityTasks` & `communityTasks/{id}/participants`
+  8. `notifications`
+  9. `reports`
+  10. `userPoints`
+  11. `config/monthlyGoals/{year-month}` (non-secret goals)
+  12. `stats/global`, `stats/aqi`, `leaderboard/all_time`, `leaderboard/monthly`
 
-Stage 5: Media Migration
-  Script: scripts/migration/05_migrate_media.js
-  Source: grov-backend/storage/app/public/
-    avatars/   -> gs://[bucket]/avatars/{uid}/avatar.[ext]
-    evidence/  -> gs://[bucket]/activities/{activityId}/photos/{photoId}.[ext]
-    tasks/     -> gs://[bucket]/community-tasks/{taskId}/cover.[ext]
-  After upload: update Firestore documents with new Storage download URLs
-  Note: If storage/ directory is empty (files not present), this stage is skipped
-        and all avatarUrl/storageUrl fields remain null until users re-upload.
+### Stage 5: Media Migration (Firebase Storage)
+- **Script**: `scripts/migration/05_migrate_media.js`
+- **Source**: `grov-backend/storage/app/public/`
+- Uploads images to Firebase Storage:
+  - `avatars/{uid}/avatar.[ext]`
+  - `activities/{activityId}/photos/{photoId}.[ext]`
+  - `community-tasks/{taskId}/cover.[ext]`
+- Updates Firestore document URLs with permanent Firebase Storage download URLs.
 
-Stage 6: Verification
-  Script: scripts/migration/06_verify.js
-  Checks:
-    - Auth user count == SQLite users count (excluding soft-deleted)
-    - Firestore users count == Auth count
-    - Firestore activities count == SQLite activities count
-    - Firestore species count == SQLite species count
-    - Firestore communityTasks count == SQLite community_tasks count
-    - Firestore notifications count == SQLite notifications count
-    - Spot check: 20 random users (name, email, role match)
-    - Spot check: 20 random activities (type, status, quantities match)
-    - Leaderboard totals match SQLite aggregation
-    - Explore stats match SQLite aggregation
-  Output: verification_report.json (pass/fail per check)
+### Stage 6: Rigorous Migration Verification
+- **Script**: `scripts/migration/06_verify.js`
+- **Automated Verification Gates**:
+  1. **Record Count Equality**:
+     - `count(Auth users) == count(active SQLite users)`
+     - `count(Firestore users) == count(SQLite users)`
+     - `count(Firestore activities) == count(SQLite activities)`
+     - `count(Firestore species) == count(SQLite species)`
+     - `count(Firestore communityTasks) == count(SQLite community_tasks)`
+     - `count(Firestore userPoints) == count(SQLite user_points)`
+  2. **100% ID Mapping Integrity**:
+     - Every entry in `id_mapping.json` must successfully resolve to an existing Firestore document containing the matching `_legacyId`.
+  3. **Data Integrity Spot-Checks**:
+     - Automated comparison of 50 randomly sampled users, activities, and tasks checking field-by-field equality between SQLite and Firestore.
+  4. **Aggregated Metric Match**:
+     - `sum(totalPlanted)` and `sum(totalPoints)` in Firestore must precisely match SQL sums `SUM(quantity_planted)` and `SUM(points)`.
 
-## Password Migration Details
+---
 
-Firebase Auth importUsers() accepts bcrypt hashes with these parameters:
-  hash: user.password (Laravel bcrypt string, e.g., $2y$12$...)
-  algorithm: BCRYPT
-  rounds: 12
-
-Laravel uses $2y$ prefix; Firebase accepts this. Users log in normally after migration.
-
-## Data That Cannot Be Migrated
-
-1. Laravel Sanctum tokens — Firebase uses ID tokens (auto-generated), no migration needed
-2. Laravel sessions — Firebase uses persistent Auth state, no migration needed
-3. Laravel Cache entries (smtp_settings, manual_aqi_override) — migrated to Firestore config/
-
-## Rollback
-
-If migration fails at any stage:
-  - Stage 1-2 (export/transform): No Firebase changes, safe to re-run
-  - Stage 3 (Auth import): Delete all imported Firebase Auth users and re-run
-  - Stage 4 (Firestore import): Delete all Firestore collections and re-run
-  - Stage 5 (Media): Delete uploaded Storage files and re-run
-  - At any point: Original SQLite database is untouched and Laravel backend still works
-
-## Estimated Migration Time
-
-| Stage | Estimated time |
-|---|---|
-| Export | < 1 minute |
-| Transform | < 1 minute |
-| Auth import | < 1 minute |
-| Firestore import | 2-5 minutes (depends on record count) |
-| Media migration | 5-30 minutes (depends on file count/size) |
-| Verification | < 2 minutes |
+## Permanent ID Mapping Storage & Version Control
+The master mapping files:
+- `migration-data/id_mapping.json`
+- `migration-data/firebase_to_old_id.json`
+will be committed directly to Git on the `firebase-migration` branch. They serve as a permanent, immutable ledger linking every modern record to its historical SQL counterpart.

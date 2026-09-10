@@ -1,9 +1,7 @@
-﻿# Grōv — Rollback Plan
+# Grōv — Rollback Plan
 
 ## Principle
-The Laravel backend and original SQLite database remain UNTOUCHED throughout the
-entire migration. The Firebase system is built alongside, not replacing, the existing
-system. Rollback at any point requires only switching the mobile app API endpoint.
+The Laravel backend (`grov-backend/`) and original SQLite database (`database.sqlite`) remain UNTOUCHED throughout and following the entire migration. They will NOT be deleted, altered, or decommissioned during the migration, serving as the permanent rollback safety net and reference implementation. The Firebase system is built entirely alongside, not replacing in-place. Rollback at any point requires only switching the mobile app API endpoint.
 
 ## Rollback Triggers
 Execute rollback if any of the following occur:

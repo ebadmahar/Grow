@@ -1,4 +1,4 @@
-﻿# Grōv — Firestore Schema
+# Grōv — Firestore Schema
 
 ## Design Principles
 1. Denormalized for reads: user name/avatar stored inside activity documents (no joins)
@@ -24,11 +24,43 @@ Fields:
   totalPoints: number                 // denormalized, updated by CF on verify
   monthlyPoints: number               // reset by scheduled function monthly
   activitiesCount: number             // denormalized counter
-  fcmTokens: string[]                 // device FCM tokens for push notifications
-  totpSecret: string | null           // per-admin encrypted TOTP secret (admins only)
-  totpSetup: boolean                  // whether TOTP has been configured
+  totpEnabled: boolean                // whether per-admin 2FA has been enrolled (secret is in Secret Manager)
+  mfaEnrolled: boolean                // Firebase MFA status flag
   isDeleted: boolean                  // soft delete flag
   createdAt: timestamp
+  // Legacy Data Traceability (for migrated records)
+  _legacyId: number | null            // original SQLite primary key (id)
+  _legacyTable: string | null         // source table name ("users")
+  _migratedAt: timestamp | null
+
+Subcollections:
+  users/{uid}/devices/{deviceId}      // Bounded per-device structure (replaces unbounded fcmTokens array)
+    token: string                     // FCM registration token
+    platform: "android" | "ios" | "web"
+    appVersion: string
+    deviceId: string                  // hardware UUID or installation ID
+    createdAt: timestamp
+    lastSeenAt: timestamp
+
+### verifiedSites/{siteId}
+// Dedicated, lightweight collection for map rendering (avoids scanning activities collection)
+Fields:
+  siteId: string                      // generated ID or slug
+  name: string                        // site / location name
+  latitude: number                    // geo coordinate for viewport querying
+  longitude: number                   // geo coordinate for viewport querying
+  geohash: string                     // geohash for geospatial range queries
+  region: string                      // e.g. "Islamabad"
+  activityCount: number               // aggregated number of verified activities
+  totalTreesPlanted: number           // aggregated verified trees
+  totalSeedsDispersed: number         // aggregated verified seeds
+  primarySpecies: string[]            // top species planted at this site
+  lastActivityAt: timestamp           // most recent activity timestamp
+  status: "active" | "completed"      // site status
+  createdAt: timestamp
+  updatedAt: timestamp
+  _legacyId: number | null            // original locations.id if applicable
+  _legacyTable: string | null
 
 ### activities/{activityId}
 Fields:
@@ -40,11 +72,15 @@ Fields:
   date: timestamp
   fieldNotes: string | null
   pointsAwarded: number
+  pointsProcessed: boolean            // idempotency flag for points allocation
+  clientSubmissionId: string | null   // client-generated idempotency key to prevent duplicate submissions
   verifiedBy: string | null           // UID of verifier
   verifiedAt: timestamp | null
   siteName: string
+  siteId: string | null               // reference to verifiedSites/{siteId}
   latitude: number
   longitude: number
+  geohash: string                     // geohash for proximity/bounding box queries
   region: string
   speciesId: string
   speciesName: string                 // denormalized
@@ -56,6 +92,10 @@ Fields:
   dispersalMethod: string | null      // "Hand Broadcasting" | "Seed Bombing (aerial)" | "Seed Drill" | "Hydroseeding"
   coverageAreaSqm: number | null
   createdAt: timestamp
+  // Legacy Data Traceability (for migrated records)
+  _legacyId: number | null            // original activities.id
+  _legacyTable: string | null         // "activities"
+  _migratedAt: timestamp | null
 
 Subcollections:
   activities/{activityId}/photos/{photoId}
@@ -150,26 +190,27 @@ Fields:
   reason: string
   createdAt: timestamp
 
-### config/smtp (single doc)
+### config/smtp (single doc — NON-SECRET metadata only)
+// Passwords, API keys, and private credentials are NEVER stored here.
+// Stored in Google Secret Manager: 'grov-smtp-noreply-password', 'grov-smtp-security-password'
 Fields:
   noreply:
-    host: string
-    port: number
-    encryption: string
-    username: string
-    password: string                  // encrypted via Secret Manager
+    host: string                      // e.g. "mail.growgrov.org"
+    port: number                      // 465 or 587
+    encryption: string                // "tls" or "ssl"
+    username: string                  // "noreply@growgrov.org"
     fromAddress: string
     fromName: string
   security:
     host: string
     port: number
     encryption: string
-    username: string
-    password: string                  // encrypted via Secret Manager
+    username: string                  // "security@growgrov.org"
     fromAddress: string
     fromName: string
 
-### config/aqiSettings (single doc)
+### config/aqiSettings (single doc — NON-SECRET config only)
+// Google Air Quality API key is stored in Google Secret Manager: 'grov-google-aqi-api-key'
 Fields:
   manualOverride: map | null
   refreshIntervalHours: number
@@ -225,26 +266,30 @@ Fields:
 
 ## Required Composite Indexes
 
-1. activities: (userId ASC, status ASC, date DESC)
+1. verifiedSites: (status ASC, geohash ASC)
+   -> Used by: map viewport geohash bounding box queries (active sites)
+2. verifiedSites: (latitude ASC, longitude ASC, status ASC)
+   -> Used by: map viewport bounding-box queries (minLat/maxLat/minLng/maxLng)
+3. activities: (userId ASC, status ASC, date DESC)
    -> Used by: getMyActivities with filter
-2. activities: (status ASC, activityType ASC, date DESC)
-   -> Used by: admin queue, map pins filtered
-3. activities: (status ASC, date DESC)
-   -> Used by: map pins unfiltered
-4. activities: (userId ASC, activityType ASC, date DESC)
+4. activities: (siteId ASC, status ASC, date DESC)
+   -> Used by: site drilldown activity history (paginated limit 20)
+5. activities: (status ASC, activityType ASC, date DESC)
+   -> Used by: admin queue
+6. activities: (status ASC, date DESC)
+   -> Used by: admin recent activities
+7. activities: (userId ASC, activityType ASC, date DESC)
    -> Used by: my-activities with type filter
-5. notifications: (userId ASC, createdAt DESC)
+8. notifications: (userId ASC, createdAt DESC)
    -> Used by: notification feed
-6. userPoints: (userId ASC, createdAt DESC)
+9. userPoints: (userId ASC, createdAt DESC)
    -> Used by: points history
-7. communityTasks: (status ASC, date DESC)
-   -> Used by: community hub listing
-8. reports: (reporterId ASC, createdAt DESC)
-   -> Used by: my reports
-9. reports: (status ASC, createdAt DESC)
-   -> Used by: admin reports queue
-10. activities: (latitude ASC, longitude ASC, status ASC)
-    -> Used by: map bounding box queries
+10. communityTasks: (status ASC, date DESC)
+    -> Used by: community hub listing
+11. reports: (reporterId ASC, createdAt DESC)
+    -> Used by: my reports
+12. reports: (status ASC, createdAt DESC)
+    -> Used by: admin reports queue
 
 ## Business Logic — Points Calculation
 

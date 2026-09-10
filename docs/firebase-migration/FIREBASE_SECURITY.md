@@ -1,4 +1,4 @@
-﻿# Grōv — Firebase Security Architecture
+# Grōv — Firebase Security Architecture
 
 ## Overview
 
@@ -21,31 +21,33 @@ Set via Cloud Function updateUserRole() using admin.auth().setCustomUserClaims()
 Claims are embedded in the Firebase ID token (JWT).
 Cloud Functions verify claims via admin.auth().verifyIdToken(idToken).
 
-## Admin 2FA — TOTP Architecture
+## Admin 2FA — Non-Deferred Per-Admin TOTP Architecture
 
-Problem: Current codebase uses a SINGLE hardcoded TOTP secret JBSWY3DPEHPK3PXP
-shared across all admin accounts. This is a critical security vulnerability.
+### Problem
+The current Laravel codebase has a **hardcoded shared TOTP secret `JBSWY3DPEHPK3PXP`** in both `AuthController.php` and `AdminWebController.php`. Every admin shares the same key. This is a critical security vulnerability.
 
-Solution:
-1. On first admin login after migration, Cloud Function setupAdminTotp() generates
-   a unique TOTP secret for that admin account using a cryptographically secure
-   random base32 string.
-2. The secret is encrypted using AES-256-GCM with a key stored in Google Secret Manager.
-3. The encrypted secret is stored in users/{uid}.totpSecret.
-4. A QR code is generated and displayed ONCE for the admin to scan into Google Authenticator.
-5. On subsequent admin logins, Cloud Function verifyAdminTotp(code) decrypts the
-   stored secret and validates the RFC 6238 TOTP code.
-6. The existing JBSWY3DPEHPK3PXP hardcoded secret is retired and must not be used.
+### Strict Requirement: Privileged-Account 2FA is NOT Deferred
+Privileged-account 2FA is mandatory from Day 1 for all administrators and coordinators.
 
-Note on Firebase MFA:
-Firebase Authentication built-in MFA (phone/TOTP) is available on the Identity Platform
-(Firebase upgrade). If the project is on Blaze + Identity Platform is enabled, this can
-replace the custom TOTP implementation. Evaluate during Phase 1 project setup.
-Recommended: implement custom TOTP first (works everywhere), migrate to Firebase MFA
-built-in as a Phase 2 hardening step once the Identity Platform is confirmed.
+### Secure Design: Secrets Stored Exclusively in Google Secret Manager (NEVER in Firestore)
+1. **Zero Plaintext/Encrypted Secrets in Firestore**:
+   - `users/{uid}` contains only `totpEnabled: boolean` and `mfaEnrolled: boolean`.
+   - The actual TOTP secret is **never stored as a field in Firestore** (neither plain nor encrypted).
+2. **Secret Storage in Google Secret Manager**:
+   - On admin/coordinator account provisioning, Cloud Function `setupAdminTotp()` generates a unique, cryptographically random base32 TOTP secret.
+   - The secret is saved directly to Google Secret Manager at `projects/{projectId}/secrets/totp-secret-{adminUid}` with restrictive IAM bindings (accessible only by the Cloud Functions runtime service account).
+   - Alternatively, when Firebase Identity Platform MFA is active, enrollment occurs directly within Identity Platform's secure credential store without touching application databases.
+3. **Verification Flow**:
+   - Admin logs in with email/password via Firebase Auth.
+   - Client calls Cloud Function `verifyAdminTotp(code)`.
+   - Function retrieves the secret from Google Secret Manager for the caller UID, validates the RFC 6238 TOTP time-step token, and mints an elevated session claim or completes authentication.
+4. **Hardcoded Secret Retired**: The shared secret `JBSWY3DPEHPK3PXP` is completely removed and rejected.
+
+---
 
 ## Firestore Security Rules
 
+```javascript
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -66,12 +68,24 @@ service cloud.firestore {
     // Users
     match /users/{uid} {
       allow read: if isAuthenticated() && (isOwner(uid) || isAdmin());
-      // Users may only update non-privileged fields
+      // Users may only update non-privileged profile fields
       allow update: if isAuthenticated() && isOwner(uid)
         && !request.resource.data.diff(resource.data).affectedKeys()
            .hasAny(['role', 'isDeleted', 'totalPlanted', 'totalSeeded',
-                    'totalPoints', 'monthlyPoints', 'activitiesCount', 'totpSecret']);
-      allow create, delete: if false; // Cloud Functions only
+                    'totalPoints', 'monthlyPoints', 'activitiesCount',
+                    'totpEnabled', 'mfaEnrolled', '_legacyId', '_legacyTable']);
+      allow create, delete: if false; // Provisioned via Cloud Functions only
+
+      // Bounded Device Subcollection for FCM tokens
+      match /devices/{deviceId} {
+        allow read, write: if isAuthenticated() && isOwner(uid);
+      }
+    }
+
+    // Dedicated Verified Sites Collection for Map Rendering
+    match /verifiedSites/{siteId} {
+      allow read: if true;
+      allow write: if false; // Updated exclusively via verifyActivity Cloud Function
     }
 
     // Activities — all writes via Cloud Functions (admin SDK)
@@ -94,7 +108,7 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // Community tasks — public read, all writes via Cloud Functions
+    // Community tasks — public read, writes via Cloud Functions
     match /communityTasks/{taskId} {
       allow read: if true;
       allow write: if false;
@@ -123,7 +137,7 @@ service cloud.firestore {
     match /reports/{reportId} {
       allow read: if isAuthenticated()
         && (resource.data.reporterId == request.auth.uid || isAdmin());
-      allow create: if isAuthenticated();
+      allow create: if isAuthenticated() && request.resource.data.reporterId == request.auth.uid;
       allow update: if isAdmin();
       allow delete: if false;
     }
@@ -140,7 +154,7 @@ service cloud.firestore {
       allow write: if false;
     }
 
-    // Config — admin only (SMTP, monthly goals, AQI settings)
+    // Config — admin only (SMTP metadata, AQI settings) — ZERO SECRETS STORED HERE
     match /config/{docId} {
       allow read, write: if isAdmin();
     }
