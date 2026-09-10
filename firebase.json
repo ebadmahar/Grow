@@ -25,6 +25,9 @@
   },
   "hosting": {
     "public": "grov-admin/dist",
+    "predeploy": [
+      "npm --prefix grov-admin run build"
+    ],
     "ignore": [
       "firebase.json",
       "**/.*",
