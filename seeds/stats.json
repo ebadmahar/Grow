@@ -1,0 +1,37 @@
+{
+  "global": {
+    "totalPlanted": 1550,
+    "totalSeeded": 4000,
+    "activeSitesCount": 5,
+    "dailyRecorded": 0,
+    "co2WeeklyKg": 662.3,
+    "co2TotalKg": 34440.0,
+    "regionalSurvivalRate": "85%",
+    "lastUpdated": "2026-09-10T12:00:00.000Z"
+  },
+  "aqi": {
+    "location": "Islamabad, Pakistan",
+    "aqi": 72,
+    "status": "Moderate",
+    "aqiColor": "#F59E0B",
+    "aqiEmoji": "🟡",
+    "pm10": 45.2,
+    "pm2_5": 22.1,
+    "source": "Open-Meteo",
+    "lastUpdatedAt": "2026-09-10T12:00:00.000Z"
+  },
+  "leaderboard": {
+    "all_time": {
+      "updatedAt": "2026-09-10T12:00:00.000Z",
+      "rankings": []
+    },
+    "monthly": {
+      "updatedAt": "2026-09-10T12:00:00.000Z",
+      "rankings": []
+    },
+    "weekly": {
+      "updatedAt": "2026-09-10T12:00:00.000Z",
+      "rankings": []
+    }
+  }
+}

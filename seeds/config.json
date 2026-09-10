@@ -1,0 +1,40 @@
+{
+  "monthlyGoals": {
+    "current": {
+      "year": 2026,
+      "month": 9,
+      "title": "Islamabad Monthly Ecosystem Restoration Target",
+      "targetTrees": 10000,
+      "targetSeeds": 5000,
+      "targetMonitoring": 500,
+      "targetParticipants": 200,
+      "status": "active",
+      "createdAt": "2026-09-01T00:00:00.000Z"
+    }
+  },
+  "smtp": {
+    "noreply": {
+      "host": "mail.growgrov.org",
+      "port": 465,
+      "encryption": "ssl",
+      "username": "noreply@growgrov.org",
+      "fromAddress": "noreply@growgrov.org",
+      "fromName": "Grōv Platform Notifications"
+    },
+    "security": {
+      "host": "mail.growgrov.org",
+      "port": 465,
+      "encryption": "ssl",
+      "username": "security@growgrov.org",
+      "fromAddress": "security@growgrov.org",
+      "fromName": "Grōv Security & Verification"
+    }
+  },
+  "aqiSettings": {
+    "defaultLocation": "Islamabad, Pakistan",
+    "latitude": 33.6844,
+    "longitude": 73.0479,
+    "refreshIntervalHours": 1,
+    "manualOverride": null
+  }
+}

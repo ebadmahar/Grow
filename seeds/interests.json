@@ -1,0 +1,12 @@
+[
+  { "id": "tree-plantation", "name": "Tree Plantation", "order": 1 },
+  { "id": "seed-bombing", "name": "Seed Bombing", "order": 2 },
+  { "id": "monitoring", "name": "Monitoring", "order": 3 },
+  { "id": "mangroves", "name": "Mangroves", "order": 4 },
+  { "id": "reforestation", "name": "Reforestation", "order": 5 },
+  { "id": "native-species", "name": "Native Species", "order": 6 },
+  { "id": "wetlands", "name": "Wetlands", "order": 7 },
+  { "id": "urban-greening", "name": "Urban Greening", "order": 8 },
+  { "id": "community-tasks", "name": "Community Tasks", "order": 9 },
+  { "id": "data-collection", "name": "Data Collection", "order": 10 }
+]
