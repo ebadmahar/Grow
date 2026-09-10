@@ -21,7 +21,7 @@ export const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const { login } = useAuth();
   const [email, setEmail] = useState('admin@grov.app');
-  const [password, setPassword] = useState('password');
+  const [password, setPassword] = useState('password123');
   const [totpCode, setTotpCode] = useState('');
   const [show2FA, setShow2FA] = useState(false);
   const [loading, setLoading] = useState(false);

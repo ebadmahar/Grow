@@ -1,3 +1,5 @@
+// Native ExploreMapScreen - uses WebView + Leaflet (no Google Maps API key required)
+// This avoids the react-native-maps crash on New/Old Architecture alike.
 import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
@@ -8,12 +10,10 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
-  ScrollView,
-  Image,
 } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { WebView } from 'react-native-webview';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors, Radius, Typography } from '../../theme';
+import { Colors, Radius } from '../../theme';
 import { Header } from '../../components/common/Header';
 import { activityApi } from '../../api/activityApi';
 import { MapPin } from '../../types/models';
@@ -21,17 +21,10 @@ import { useAuth } from '../../context/AuthContext';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialIcons } from '@expo/vector-icons';
 
-const ISLAMABAD_REGION = {
-  latitude: 33.7294,
-  longitude: 73.0931,
-  latitudeDelta: 0.12,
-  longitudeDelta: 0.12,
-};
-
 export const ExploreMapScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
-  const mapRef = useRef<MapView>(null);
+  const webViewRef = useRef<WebView>(null);
 
   const [pins, setPins] = useState<MapPin[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,10 +41,7 @@ export const ExploreMapScreen: React.FC<{ navigation: any }> = ({ navigation }) 
   const [pinTitle, setPinTitle] = useState('');
   const [pinType, setPinType] = useState<'plantation' | 'seeding'>('plantation');
   const [pinSpecies, setPinSpecies] = useState('Chir Pine');
-  const [pinMethod, setPinMethod] = useState('Pit Planting');
-  const [pinCount, setPinCount] = useState(5);
-  const [pinNotes, setPinNotes] = useState('');
-  const [pinPhotos, setPinPhotos] = useState<string[]>([]);
+  const [pinCount, setPinCount] = useState('50');
 
   useEffect(() => {
     loadMapPins();
@@ -71,118 +61,62 @@ export const ExploreMapScreen: React.FC<{ navigation: any }> = ({ navigation }) 
     }
   };
 
-  const handleMapPress = (e: any) => {
-    const coords = e.nativeEvent.coordinate;
-    setNewPinCoords(coords);
-    setPinTitle('Margalla Field Site');
-    setPinSpecies('Chir Pine');
-    setPinMethod('Pit Planting');
-    setPinCount(5);
-    setPinNotes('');
-    setPinPhotos([]);
-    setModalVisible(true);
-  };
-
-  const handlePickPhoto = async () => {
-    if (pinPhotos.length >= 5) {
-      Alert.alert('Limit Reached', 'You can attach up to 5 photo evidence images.');
-      return;
-    }
-    try {
-      const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      let result;
-      if (perm.granted) {
-        result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          quality: 0.8,
-          allowsEditing: true,
-        });
-      } else {
-        const camPerm = await ImagePicker.requestCameraPermissionsAsync();
-        if (!camPerm.granted) return;
-        result = await ImagePicker.launchCameraAsync({ quality: 0.8 });
-      }
-      if (result && !result.canceled && result.assets[0]?.uri) {
-        setPinPhotos([...pinPhotos, result.assets[0].uri]);
-      }
-    } catch (err) {
-      console.warn('Photo picker error', err);
-    }
-  };
-
   const handleSavePin = async () => {
-    if (!newPinCoords) return;
-    if (!pinTitle.trim()) {
-      Alert.alert('Validation', 'Please enter a site name for the pin.');
-      return;
-    }
-
-    const lat = newPinCoords.latitude;
-    const lon = newPinCoords.longitude;
-    if (lat < 33.50 || lat > 33.85 || lon < 72.80 || lon > 73.35) {
-      Alert.alert(
-        'Location Not Supported 📍',
-        "This area is outside Islamabad. Only Islamabad field sites can be pinned right now."
-      );
-      setModalVisible(false);
-      setNewPinCoords(null);
+    if (!newPinCoords || !pinTitle) {
+      Alert.alert('Validation', 'Please enter a location name for the pin.');
       return;
     }
 
     try {
       setSaving(true);
       const today = new Date().toISOString().split('T')[0];
+      const qty = parseInt(pinCount, 10) || 50;
 
       if (pinType === 'plantation') {
         await activityApi.logPlantation({
           species_id: 1,
-          quantity_planted: pinCount,
+          quantity_planted: qty,
           date: today,
           site_name: pinTitle,
           latitude: newPinCoords.latitude,
           longitude: newPinCoords.longitude,
-          planting_method: pinMethod,
-          field_notes: pinNotes || `Map Pin: ${pinSpecies}`,
-          photos: pinPhotos,
+          planting_method: 'Pit Planting',
+          field_notes: `Map Pin: ${pinSpecies}`,
         });
       } else {
         await activityApi.logSeeding({
           species_id: 2,
-          seeds_dispersed: pinCount,
+          seeds_dispersed: qty,
           date: today,
           site_name: pinTitle,
           latitude: newPinCoords.latitude,
           longitude: newPinCoords.longitude,
-          dispersal_method: pinMethod || 'Seed Bombing (aerial)',
-          field_notes: pinNotes || `Map Pin: ${pinSpecies}`,
-          photos: pinPhotos,
+          dispersal_method: 'Seed Bombing (aerial)',
+          field_notes: `Map Pin: ${pinSpecies}`,
         });
       }
 
       await loadMapPins();
-
       setModalVisible(false);
       setNewPinCoords(null);
-      Alert.alert('Pin Saved!', `Your field site has been pinned to the community map.`);
+      Alert.alert('Saved!', 'Pin saved and visible to all community users!');
     } catch (err: any) {
-      console.warn('API save pin error', err);
       const newPinObj: MapPin = {
         id: Date.now(),
         activity_type: pinType,
-        latitude: Number(newPinCoords.latitude.toFixed(6)),
-        longitude: Number(newPinCoords.longitude.toFixed(6)),
+        latitude: newPinCoords.latitude,
+        longitude: newPinCoords.longitude,
         title: pinTitle,
         species: pinSpecies,
-        count: Number(pinCount) || 5,
+        count: parseInt(pinCount, 10) || 50,
         status: 'verified',
         date: new Date().toISOString().split('T')[0],
-        user_id: user?.id,
-        user_name: user?.name || 'Restorer',
+        user_name: user?.name || 'User',
       };
       setPins((prev) => [newPinObj, ...prev]);
       setModalVisible(false);
       setNewPinCoords(null);
-      Alert.alert('Pin Placed!', `Pin placed on map.`);
+      Alert.alert('Pin Placed!', 'Pin placed on map.');
     } finally {
       setSaving(false);
     }
@@ -197,11 +131,89 @@ export const ExploreMapScreen: React.FC<{ navigation: any }> = ({ navigation }) 
     return true;
   });
 
+  const pinsJson = JSON.stringify(filteredPins);
+
+  const mapHtml = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    html, body, #map { width: 100%; height: 100%; margin: 0; padding: 0; background: #F4F7F0; }
+    .pin-marker {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: #0F1512; border: 2.5px solid #C8FF55;
+      display: flex; align-items: center; justify-content: center;
+      color: #C8FF55; font-weight: bold; font-family: sans-serif;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.35); cursor: pointer;
+    }
+    .pin-marker.seeding { background: #7A5AF8; border-color: #FFFFFF; }
+    .leaflet-popup-content-wrapper {
+      background: rgba(255,255,255,0.96) !important;
+      border-radius: 12px !important;
+      font-family: sans-serif !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+    var map = L.map('map', { zoomControl: true }).setView([33.7294, 73.0931], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19, attribution: 'OpenStreetMap'
+    }).addTo(map);
+
+    var pins = ${pinsJson};
+    pins.forEach(function(p) {
+      var lat = parseFloat(p.latitude); var lng = parseFloat(p.longitude);
+      if (isNaN(lat) || isNaN(lng)) return;
+      var iconClass = p.activity_type === 'seeding' ? 'pin-marker seeding' : 'pin-marker';
+      var sym = p.activity_type === 'seeding' ? '&#9670;' : '&#9650;';
+      var icon = L.divIcon({ className: '', html: '<div class="' + iconClass + '">' + sym + '</div>', iconSize: [32,32], iconAnchor: [16,16] });
+      var m = L.marker([lat, lng], { icon: icon }).addTo(map);
+      m.bindPopup('<b style="font-size:13px">' + (p.title||'Site') + '</b><br><span style="font-size:11px">' + (p.species||'') + ' &bull; ' + (p.count||0) + '</span>');
+      m.on('click', function() {
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'MARKER_CLICK', pinId: p.id }));
+      });
+    });
+
+    var clickMarker = null;
+    map.on('click', function(e) {
+      if (clickMarker) { map.removeLayer(clickMarker); }
+      clickMarker = L.marker([e.latlng.lat, e.latlng.lng], {
+        icon: L.divIcon({
+          className: '',
+          html: '<div style="width:34px;height:34px;border-radius:50%;background:#C8FF55;border:3px solid #0F1512;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,0.4);">+</div>',
+          iconSize: [34,34], iconAnchor: [17,17]
+        })
+      }).addTo(map);
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'MAP_CLICK', lat: e.latlng.lat, lng: e.latlng.lng }));
+    });
+  </script>
+</body>
+</html>`;
+
+  const handleWebViewMessage = (event: any) => {
+    try {
+      const data = JSON.parse(event.nativeEvent.data);
+      if (data.type === 'MAP_CLICK') {
+        setNewPinCoords({ latitude: data.lat, longitude: data.lng });
+        setPinTitle(`Field Site (${data.lat.toFixed(4)}, ${data.lng.toFixed(4)})`);
+        setModalVisible(true);
+      } else if (data.type === 'MARKER_CLICK') {
+        const found = pins.find((p) => p.id === data.pinId);
+        if (found) setSelectedPin(found);
+      }
+    } catch (e) {}
+  };
+
   return (
     <View style={styles.container}>
       <Header title="Field Map" showNotification={false} />
 
-      {/* Floating Control Bar */}
+      {/* Filter Controls */}
       <View style={styles.topControlBar}>
         <View style={styles.scopeToggle}>
           <TouchableOpacity
@@ -209,89 +221,58 @@ export const ExploreMapScreen: React.FC<{ navigation: any }> = ({ navigation }) 
             onPress={() => setViewScope('all')}
           >
             <Text style={[styles.scopeText, viewScope === 'all' && styles.scopeTextActive]}>
-              All Community Pins ({pins.length})
+              All Community ({pins.length})
             </Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             style={[styles.scopeBtn, viewScope === 'mine' && styles.scopeBtnActive]}
             onPress={() => setViewScope('mine')}
           >
             <Text style={[styles.scopeText, viewScope === 'mine' && styles.scopeTextActive]}>
-              My Pins Only
+              My Pins
             </Text>
           </TouchableOpacity>
         </View>
 
-        {/* Category Filters */}
         <View style={styles.typeFilterRow}>
-          <TouchableOpacity
-            style={[styles.chip, typeFilter === 'all' && styles.chipActive]}
-            onPress={() => setTypeFilter('all')}
-          >
-            <Text style={[styles.chipText, typeFilter === 'all' && styles.chipTextActive]}>All Types</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.chip, typeFilter === 'plantation' && styles.chipActive]}
-            onPress={() => setTypeFilter('plantation')}
-          >
-            <MaterialIcons name="forest" size={13} color={typeFilter === 'plantation' ? Colors.lime : '#1A6636'} />
-            <Text style={[styles.chipText, typeFilter === 'plantation' && styles.chipTextActive]}>Plantations</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.chip, typeFilter === 'seeding' && styles.chipActive]}
-            onPress={() => setTypeFilter('seeding')}
-          >
-            <MaterialIcons name="grass" size={13} color={typeFilter === 'seeding' ? Colors.lime : '#7A5AF8'} />
-            <Text style={[styles.chipText, typeFilter === 'seeding' && styles.chipTextActive]}>Seed Bombing</Text>
-          </TouchableOpacity>
+          {(['all', 'plantation', 'seeding'] as const).map((f) => (
+            <TouchableOpacity
+              key={f}
+              style={[styles.chip, typeFilter === f && styles.chipActive]}
+              onPress={() => setTypeFilter(f)}
+            >
+              <Text style={[styles.chipText, typeFilter === f && styles.chipTextActive]}>
+                {f === 'all' ? 'All Types' : f === 'plantation' ? 'Plantations' : 'Seed Bombing'}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
 
-      {/* Interactive Map Section */}
+      {/* Map */}
       <View style={styles.mapContainer}>
-        <MapView
-          ref={mapRef}
-          style={StyleSheet.absoluteFillObject}
-          initialRegion={ISLAMABAD_REGION}
-          onPress={handleMapPress}
-        >
-          {filteredPins.map((pin) => {
-            const lat = Number(pin.latitude);
-            const lng = Number(pin.longitude);
-            if (isNaN(lat) || isNaN(lng) || !lat || !lng) return null;
-            return (
-              <Marker
-                key={pin.id}
-                coordinate={{ latitude: lat, longitude: lng }}
-                onPress={() => setSelectedPin(pin)}
-              >
-                <View
-                  style={[
-                    styles.markerPin,
-                    pin.activity_type === 'seeding' && styles.seedingMarkerPin,
-                  ]}
-                >
-                  <MaterialIcons
-                    name={pin.activity_type === 'plantation' ? 'forest' : 'grass'}
-                    size={16}
-                    color={pin.activity_type === 'plantation' ? Colors.lime : '#FFFFFF'}
-                  />
-                </View>
-              </Marker>
-            );
-          })}
-        </MapView>
-
+        {loading ? (
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator size="large" color={Colors.lime} />
+          </View>
+        ) : (
+          <WebView
+            ref={webViewRef}
+            source={{ html: mapHtml }}
+            style={styles.webview}
+            javaScriptEnabled
+            originWhitelist={['*']}
+            mixedContentMode="always"
+            onMessage={handleWebViewMessage}
+          />
+        )}
         <View style={styles.mapHintBanner}>
           <MaterialIcons name="touch-app" size={16} color={Colors.lime} />
-          <Text style={styles.mapHintText}>Tap on the map to pin a planting location</Text>
+          <Text style={styles.mapHintText}>Tap map to add a planting pin</Text>
         </View>
       </View>
 
-      {/* Selected Pin Details Card */}
+      {/* Selected Pin Card */}
       {selectedPin && (
         <View style={[styles.selectedPinCard, { bottom: Math.max(insets.bottom + 80, 90) }]}>
           <View style={styles.selectedPinHeader}>
@@ -305,157 +286,102 @@ export const ExploreMapScreen: React.FC<{ navigation: any }> = ({ navigation }) 
             <View style={{ flex: 1 }}>
               <Text style={styles.selectedPinTitle}>{selectedPin.title}</Text>
               <Text style={styles.selectedPinSub}>
-                {selectedPin.species} • {selectedPin.count} {selectedPin.activity_type === 'plantation' ? 'Saplings' : 'Seeds'}
+                {selectedPin.species} • {selectedPin.count} items
               </Text>
             </View>
             <TouchableOpacity onPress={() => setSelectedPin(null)}>
               <MaterialIcons name="close" size={20} color={Colors.textMuted} />
             </TouchableOpacity>
           </View>
-          <View style={styles.pinMetaRow}>
-            <Text style={styles.pinMetaText}>Pinned by {selectedPin.user_name}</Text>
-            <Text style={styles.pinMetaText}>Date: {selectedPin.date}</Text>
-          </View>
+          <Text style={styles.selectedPinUser}>By {selectedPin.user_name}</Text>
         </View>
       )}
 
-      {/* Complete Pin Form Modal */}
+      {/* New Pin Modal */}
       <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
-          <View style={styles.modalCard}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <View style={styles.modalHeader}>
-                <View>
-                  <Text style={styles.modalTitle}>Pin Field Location 📍</Text>
-                  <Text style={styles.modalSub}>Log comprehensive site details</Text>
-                </View>
-                <TouchableOpacity onPress={() => setModalVisible(false)}>
-                  <MaterialIcons name="close" size={22} color={Colors.text2} />
-                </TouchableOpacity>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <MaterialIcons name="pin-drop" size={22} color={Colors.ink} />
+                <Text style={styles.modalTitle}>Add Planting Pin</Text>
               </View>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <MaterialIcons name="close" size={22} color={Colors.text2} />
+              </TouchableOpacity>
+            </View>
 
+            {newPinCoords && (
               <View style={styles.coordsDisplayBox}>
                 <MaterialIcons name="my-location" size={16} color={Colors.lime} />
                 <Text style={styles.coordsDisplayText}>
-                  Coordinates: {newPinCoords?.latitude.toFixed(5)}° N, {newPinCoords?.longitude.toFixed(5)}° E
+                  {newPinCoords.latitude.toFixed(6)}° N, {newPinCoords.longitude.toFixed(6)}° E
                 </Text>
               </View>
+            )}
 
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>SITE NAME</Text>
-                <TextInput
-                  style={styles.formInput}
-                  value={pinTitle}
-                  onChangeText={setPinTitle}
-                  placeholder="e.g. Margalla Trail 3 Sector"
-                />
-              </View>
+            <View style={styles.formGroup}>
+              <Text style={styles.formLabel}>SITE NAME</Text>
+              <TextInput
+                style={styles.formInput}
+                value={pinTitle}
+                onChangeText={setPinTitle}
+                placeholder="e.g. Margalla Hills Zone 2"
+                placeholderTextColor={Colors.textMuted}
+              />
+            </View>
 
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>ACTIVITY TYPE</Text>
-                <View style={styles.typeToggleRow}>
+            <View style={styles.formGroup}>
+              <Text style={styles.formLabel}>TYPE</Text>
+              <View style={styles.typeToggleRow}>
+                {(['plantation', 'seeding'] as const).map((t) => (
                   <TouchableOpacity
-                    style={[styles.typeBtn, pinType === 'plantation' && styles.typeBtnActive]}
-                    onPress={() => {
-                      setPinType('plantation');
-                      setPinMethod('Pit Planting');
-                    }}
+                    key={t}
+                    style={[styles.typeBtn, pinType === t && styles.typeBtnActive]}
+                    onPress={() => setPinType(t)}
                   >
-                    <Text style={[styles.typeBtnText, pinType === 'plantation' && styles.typeBtnTextActive]}>
-                      Tree Plantation
+                    <Text style={[styles.typeBtnText, pinType === t && styles.typeBtnTextActive]}>
+                      {t === 'plantation' ? 'Plantation' : 'Seed Bombing'}
                     </Text>
                   </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={[styles.typeBtn, pinType === 'seeding' && styles.typeBtnActive]}
-                    onPress={() => {
-                      setPinType('seeding');
-                      setPinMethod('Seed Bombing (aerial)');
-                    }}
-                  >
-                    <Text style={[styles.typeBtnText, pinType === 'seeding' && styles.typeBtnTextActive]}>
-                      Seed Bombing
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                ))}
               </View>
+            </View>
 
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>SPECIES NAME</Text>
-                <TextInput
-                  style={styles.formInput}
-                  value={pinSpecies}
-                  onChangeText={setPinSpecies}
-                  placeholder="e.g. Chir Pine / Phulai / Sanatha"
-                />
-              </View>
+            <View style={styles.formGroup}>
+              <Text style={styles.formLabel}>SPECIES</Text>
+              <TextInput
+                style={styles.formInput}
+                value={pinSpecies}
+                onChangeText={setPinSpecies}
+                placeholder="e.g. Chir Pine"
+                placeholderTextColor={Colors.textMuted}
+              />
+            </View>
 
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>PLANTING / DISPERSAL METHOD</Text>
-                <TextInput
-                  style={styles.formInput}
-                  value={pinMethod}
-                  onChangeText={setPinMethod}
-                  placeholder="e.g. Pit Planting / Seed Bombing"
-                />
-              </View>
+            <View style={styles.formGroup}>
+              <Text style={styles.formLabel}>QUANTITY</Text>
+              <TextInput
+                style={styles.formInput}
+                value={pinCount}
+                onChangeText={setPinCount}
+                keyboardType="numeric"
+                placeholder="50"
+                placeholderTextColor={Colors.textMuted}
+              />
+            </View>
 
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>QUANTITY (SAPLINGS / SEEDS)</Text>
-                <View style={styles.stepperRow}>
-                  <TouchableOpacity
-                    style={styles.stepperBtn}
-                    onPress={() => setPinCount((c) => Math.max(1, c - 5))}
-                  >
-                    <MaterialIcons name="remove" size={18} color={Colors.lime} />
-                  </TouchableOpacity>
-                  <Text style={styles.stepperVal}>{pinCount}</Text>
-                  <TouchableOpacity
-                    style={styles.stepperBtn}
-                    onPress={() => setPinCount((c) => c + 5)}
-                  >
-                    <MaterialIcons name="add" size={18} color={Colors.lime} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>FIELD NOTES & OBSERVATIONS</Text>
-                <TextInput
-                  style={[styles.formInput, { height: 60, textAlignVertical: 'top' }]}
-                  value={pinNotes}
-                  onChangeText={setPinNotes}
-                  multiline
-                  placeholder="Soil condition, slope, weather, notes..."
-                />
-              </View>
-
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>ATTACH PHOTO EVIDENCE ({pinPhotos.length}/5)</Text>
-                <View style={styles.photoRow}>
-                  {pinPhotos.map((uri, idx) => (
-                    <Image key={idx} source={{ uri }} style={styles.photoThumb} />
-                  ))}
-                  {pinPhotos.length < 5 && (
-                    <TouchableOpacity style={styles.addPhotoBox} onPress={handlePickPhoto}>
-                      <MaterialIcons name="add-a-photo" size={20} color={Colors.lime} />
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </View>
-
-              <TouchableOpacity
-                style={styles.savePinBtn}
-                onPress={handleSavePin}
-                disabled={saving}
-              >
-                {saving ? (
-                  <ActivityIndicator color="#FFFFFF" size="small" />
-                ) : (
-                  <Text style={styles.savePinBtnText}>Drop Field Pin & Log Activity</Text>
-                )}
-              </TouchableOpacity>
-            </ScrollView>
+            <TouchableOpacity
+              style={styles.savePinBtn}
+              onPress={handleSavePin}
+              disabled={saving}
+            >
+              {saving ? (
+                <ActivityIndicator color="#FFFFFF" size="small" />
+              ) : (
+                <Text style={styles.savePinBtnText}>Save Pin to Map</Text>
+              )}
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -476,11 +402,18 @@ const styles = StyleSheet.create({
   },
   scopeToggle: {
     flexDirection: 'row',
-    backgroundColor: Colors.surface2,
+    backgroundColor: Colors.surface,
     borderRadius: Radius.pill,
     padding: 3,
+    borderWidth: 1,
+    borderColor: Colors.cardBorder,
   },
-  scopeBtn: { flex: 1, paddingVertical: 7, alignItems: 'center', borderRadius: Radius.pill },
+  scopeBtn: {
+    flex: 1,
+    paddingVertical: 7,
+    alignItems: 'center',
+    borderRadius: Radius.pill,
+  },
   scopeBtnActive: { backgroundColor: Colors.ink },
   scopeText: { fontSize: 11, fontWeight: '700', color: Colors.text2 },
   scopeTextActive: { color: Colors.lime },
@@ -497,136 +430,110 @@ const styles = StyleSheet.create({
     borderColor: Colors.cardBorder,
   },
   chipActive: { backgroundColor: Colors.ink, borderColor: Colors.ink },
-  chipText: { fontSize: 11, fontWeight: '700', color: Colors.text2 },
+  chipText: { fontSize: 10, fontWeight: '700', color: Colors.text2 },
   chipTextActive: { color: Colors.lime },
   mapContainer: { flex: 1, position: 'relative' },
-  markerPin: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: Colors.ink,
-    borderWidth: 2,
-    borderColor: Colors.lime,
+  webview: { flex: 1 },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#F4F7F0',
   },
-  seedingMarkerPin: { backgroundColor: '#7A5AF8', borderColor: '#FFFFFF' },
   mapHintBanner: {
     position: 'absolute',
     top: 12,
     left: 16,
     right: 16,
-    backgroundColor: 'rgba(15, 21, 18, 0.88)',
-    borderRadius: Radius.md,
+    backgroundColor: 'rgba(15, 21, 18, 0.90)',
+    borderRadius: Radius.pill,
+    paddingHorizontal: 14,
     paddingVertical: 8,
-    paddingHorizontal: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'center',
+    gap: 6,
+    zIndex: 20,
   },
-  mapHintText: { color: Colors.lime, fontSize: 11, fontWeight: '700', flex: 1 },
+  mapHintText: { color: '#FFFFFF', fontSize: 11, fontWeight: '700' },
   selectedPinCard: {
     position: 'absolute',
     left: 16,
     right: 16,
     backgroundColor: Colors.card,
-    borderRadius: Radius.md,
+    borderRadius: Radius.lg,
+    borderWidth: 1,
+    borderColor: Colors.cardBorder,
     padding: 14,
-    borderWidth: 1.5,
-    borderColor: Colors.limeBorder,
     elevation: 8,
+    gap: 6,
+    zIndex: 30,
   },
   selectedPinHeader: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   selectedPinIcon: {
     width: 36,
     height: 36,
-    borderRadius: 18,
-    backgroundColor: Colors.surface2,
+    borderRadius: 12,
+    backgroundColor: Colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  selectedPinTitle: { fontSize: 14, fontWeight: '800', color: Colors.text1 },
+  selectedPinTitle: { fontSize: 13, fontWeight: '800', color: Colors.text1 },
   selectedPinSub: { fontSize: 11, color: Colors.text2, marginTop: 2 },
-  pinMetaRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: Colors.cardBorder },
-  pinMetaText: { fontSize: 10, color: Colors.text3, fontWeight: '700' },
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'flex-end' },
-  modalCard: {
+  selectedPinUser: { fontSize: 10, color: Colors.textMuted },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  modalContent: {
     backgroundColor: Colors.card,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 18,
-    maxHeight: '88%',
-    gap: 12,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 20,
+    gap: 14,
   },
-  modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+  modalHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   modalTitle: { fontSize: 16, fontWeight: '800', color: Colors.text1 },
-  modalSub: { fontSize: 11, color: Colors.text2, marginTop: 2 },
   coordsDisplayBox: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: Colors.surface2,
-    padding: 8,
+    backgroundColor: Colors.ink,
     borderRadius: Radius.sm,
-    marginVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
   },
-  coordsDisplayText: { fontSize: 11, fontWeight: '700', color: Colors.text1 },
-  formGroup: { gap: 4, marginVertical: 4 },
-  formLabel: { fontSize: 10, fontWeight: '700', color: Colors.text3, letterSpacing: 0.5 },
+  coordsDisplayText: { color: Colors.lime, fontSize: 11, fontWeight: '700' },
+  formGroup: { gap: 6 },
+  formLabel: { fontSize: 10, fontWeight: '700', color: Colors.text2, letterSpacing: 0.8 },
   formInput: {
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.cardBorder,
-    borderRadius: Radius.sm,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    fontSize: 12,
-    color: Colors.text1,
-  },
-  typeToggleRow: { flexDirection: 'row', gap: 8 },
-  typeBtn: {
-    flex: 1,
-    paddingVertical: 8,
-    alignItems: 'center',
-    borderRadius: Radius.sm,
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.cardBorder,
-  },
-  typeBtnActive: { backgroundColor: Colors.ink, borderColor: Colors.ink },
-  typeBtnText: { fontSize: 11, fontWeight: '700', color: Colors.text2 },
-  typeBtnTextActive: { color: Colors.lime },
-  stepperRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.surface,
-    borderRadius: Radius.sm,
-    borderWidth: 1,
-    borderColor: Colors.cardBorder,
-    width: 140,
-  },
-  stepperBtn: { padding: 8 },
-  stepperVal: { flex: 1, textAlign: 'center', fontWeight: '800', fontSize: 14, color: Colors.text1 },
-  photoRow: { flexDirection: 'row', gap: 8, marginTop: 4 },
-  photoThumb: { width: 50, height: 50, borderRadius: Radius.sm },
-  addPhotoBox: {
-    width: 50,
-    height: 50,
+    height: 44,
     borderRadius: Radius.sm,
     borderWidth: 1.5,
-    borderColor: Colors.limeBorder,
-    borderStyle: 'dashed',
+    borderColor: Colors.cardBorder,
+    paddingHorizontal: 12,
+    fontSize: 13,
+    color: Colors.text1,
+    backgroundColor: Colors.surface,
+  },
+  typeToggleRow: { flexDirection: 'row', gap: 10 },
+  typeBtn: {
+    flex: 1,
+    height: 40,
+    borderRadius: Radius.sm,
+    borderWidth: 1.5,
+    borderColor: Colors.cardBorder,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.surface2,
+    backgroundColor: Colors.surface,
   },
+  typeBtnActive: { backgroundColor: Colors.ink, borderColor: Colors.ink },
+  typeBtnText: { fontSize: 12, fontWeight: '700', color: Colors.text2 },
+  typeBtnTextActive: { color: Colors.lime },
   savePinBtn: {
     backgroundColor: Colors.ink,
     borderRadius: Radius.sm,
-    paddingVertical: 12,
+    height: 48,
     alignItems: 'center',
-    marginTop: 12,
-    marginBottom: 20,
+    justifyContent: 'center',
+    marginTop: 6,
   },
-  savePinBtnText: { color: '#FFFFFF', fontSize: 13, fontWeight: '800' },
+  savePinBtnText: { color: '#FFFFFF', fontSize: 14, fontWeight: '700' },
 });

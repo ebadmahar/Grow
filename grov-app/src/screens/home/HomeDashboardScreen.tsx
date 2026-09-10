@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
-import MapView, { Marker } from 'react-native-maps';
+import { HomeMapPreview } from '../../components/home/HomeMapPreview';
 import { Colors, Radius } from '../../theme';
 import { Header } from '../../components/common/Header';
 import { activityApi } from '../../api/activityApi';
@@ -216,43 +216,7 @@ export const HomeDashboardScreen: React.FC<{ navigation: any }> = ({ navigation 
             onPress={() => navigation.navigate('ExploreTab')}
             activeOpacity={0.9}
           >
-            {Platform.OS === 'web' ? (
-              <iframe
-                title="Islamabad Restoration Map Preview"
-                srcDoc={mapPreviewHtml}
-                width="100%"
-                height="100%"
-                style={{ border: 0, pointerEvents: 'none' }}
-              />
-            ) : (
-              <MapView
-                style={{ width: '100%', height: '100%' }}
-                initialRegion={{
-                  latitude: 33.7294,
-                  longitude: 73.0931,
-                  latitudeDelta: 0.12,
-                  longitudeDelta: 0.12,
-                }}
-                scrollEnabled={false}
-                zoomEnabled={false}
-                pitchEnabled={false}
-                rotateEnabled={false}
-              >
-                {mapPins.map((pin) => {
-                  const lat = Number(pin.latitude);
-                  const lng = Number(pin.longitude);
-                  if (isNaN(lat) || isNaN(lng) || !lat || !lng) return null;
-                  return (
-                    <Marker
-                      key={pin.id}
-                      coordinate={{ latitude: lat, longitude: lng }}
-                      title={pin.title || 'Restoration Site'}
-                      description={`${pin.count ?? 0} ${pin.activity_type || ''}`}
-                    />
-                  );
-                })}
-              </MapView>
-            )}
+            <HomeMapPreview mapPins={mapPins} mapPreviewHtml={mapPreviewHtml} />
 
             <View style={styles.mapOverlay}>
               <View style={styles.mapBadge}>

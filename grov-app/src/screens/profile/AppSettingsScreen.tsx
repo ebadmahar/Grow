@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Switch, Alert, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Radius, Typography } from '../../theme';
 import { Header } from '../../components/common/Header';
 import { Card } from '../../components/common/Card';
@@ -9,6 +10,7 @@ import { useAuth } from '../../context/AuthContext';
 import { MaterialIcons } from '@expo/vector-icons';
 
 export const AppSettingsScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
   const { user, logout, refreshProfile } = useAuth();
 
   // Profile Edit State
@@ -116,7 +118,10 @@ export const AppSettingsScreen: React.FC<{ navigation: any }> = ({ navigation })
     <View style={styles.container}>
       <Header title="Account & App Settings" showBack onBack={() => navigation.goBack()} showNotification={false} />
 
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={[styles.content, { paddingBottom: Math.max(insets.bottom + 40, 60) }]}
+      >
         {/* Member Profile Details Editor */}
         <Text style={styles.sectionTitle}>Edit Profile Details</Text>
         <Card style={styles.profileEditCard}>

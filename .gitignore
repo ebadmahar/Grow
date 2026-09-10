@@ -22,6 +22,7 @@ android/build/
 storage/*.key
 **/storage/logs/*.log
 **/bootstrap/cache/*.php
+**/public/storage
 
 # IDE & OS
 .DS_Store

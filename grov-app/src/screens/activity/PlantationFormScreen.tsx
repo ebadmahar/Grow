@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Image } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Radius, Typography } from '../../theme';
 import { Header } from '../../components/common/Header';
 import { Input } from '../../components/common/Input';
@@ -12,6 +13,7 @@ import * as Location from 'expo-location';
 import { MaterialIcons } from '@expo/vector-icons';
 
 export const PlantationFormScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
   const [speciesList, setSpeciesList] = useState<Species[]>([]);
   const [selectedSpeciesId, setSelectedSpeciesId] = useState<number | null>(null);
   const [quantity, setQuantity] = useState('5');
@@ -138,7 +140,10 @@ export const PlantationFormScreen: React.FC<{ navigation: any }> = ({ navigation
     <View style={styles.container}>
       <Header title="Tree Plantation Drive" showBack onBack={() => navigation.goBack()} showNotification={false} />
 
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={[styles.content, { paddingBottom: Math.max(insets.bottom + 40, 60) }]}
+      >
         <Text style={styles.label}>Select Native Tree Species</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.speciesScroll}>
           {speciesList.map((item) => {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { Colors, Radius, Typography } from '../../theme';
 import { Header } from '../../components/common/Header';
@@ -9,6 +10,7 @@ import { LeaderboardRanking } from '../../types/api';
 import { MaterialIcons } from '@expo/vector-icons';
 
 export const LeaderboardScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
   const [rankings, setRankings] = useState<LeaderboardRanking[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -97,7 +99,7 @@ export const LeaderboardScreen: React.FC<{ navigation: any }> = ({ navigation })
         <FlatList
           data={rankings}
           keyExtractor={(item) => String(item.id)}
-          contentContainerStyle={styles.listContent}
+          contentContainerStyle={[styles.listContent, { paddingBottom: Math.max(insets.bottom + 95, 110) }]}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchLeaderboard} tintColor={Colors.lime} />}
           ListEmptyComponent={
             <Card style={{ alignItems: 'center', paddingVertical: 24 }}>

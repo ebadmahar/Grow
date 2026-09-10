@@ -20,13 +20,14 @@ use App\Models\UserPoint;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
         // Disable Foreign Key checks for clean truncate
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Schema::disableForeignKeyConstraints();
 
         DB::table('activity_photos')->truncate();
         DB::table('monitoring_records')->truncate();
@@ -42,7 +43,7 @@ class DatabaseSeeder extends Seeder
         DB::table('locations')->truncate();
         DB::table('users')->truncate();
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        Schema::enableForeignKeyConstraints();
 
         // 1. Seed Interests & Species CATALOGUE
         $this->call([

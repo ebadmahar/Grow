@@ -1,7 +1,9 @@
+import 'react-native-gesture-handler'; // MUST be first import
 import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { AuthProvider } from './src/context/AuthContext';
 import { RootNavigator } from './src/navigation/RootNavigator';
@@ -69,20 +71,22 @@ export default function App() {
   const isWeb = Platform.OS === 'web';
 
   return (
-    <ErrorBoundary>
-      <SafeAreaProvider>
-        <AuthProvider>
-          <View style={isWeb ? styles.webOuter : styles.fullFlex}>
-            <View style={isWeb ? styles.webShell : styles.fullFlex}>
-              <NavigationContainer>
-                <StatusBar style="dark" />
-                <RootNavigator />
-              </NavigationContainer>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ErrorBoundary>
+        <SafeAreaProvider>
+          <AuthProvider>
+            <View style={isWeb ? styles.webOuter : styles.fullFlex}>
+              <View style={isWeb ? styles.webShell : styles.fullFlex}>
+                <NavigationContainer>
+                  <StatusBar style="dark" />
+                  <RootNavigator />
+                </NavigationContainer>
+              </View>
             </View>
-          </View>
-        </AuthProvider>
-      </SafeAreaProvider>
-    </ErrorBoundary>
+          </AuthProvider>
+        </SafeAreaProvider>
+      </ErrorBoundary>
+    </GestureHandlerRootView>
   );
 }
 

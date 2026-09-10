@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Image, RefreshControl } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { Colors, Radius, Typography } from '../../theme';
 import { Header } from '../../components/common/Header';
@@ -12,6 +13,7 @@ import { MonthlyGoalData } from '../../types/api';
 import { MaterialIcons } from '@expo/vector-icons';
 
 export const CommunityHubScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
   const [tasks, setTasks] = useState<CommunityTask[]>([]);
   const [goal, setGoal] = useState<MonthlyGoalData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -79,7 +81,7 @@ export const CommunityHubScreen: React.FC<{ navigation: any }> = ({ navigation }
         <FlatList
           data={tasks}
           keyExtractor={(item) => String(item.id)}
-          contentContainerStyle={styles.listContent}
+          contentContainerStyle={[styles.listContent, { paddingBottom: Math.max(insets.bottom + 95, 110) }]}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={loadCommunityData} tintColor={Colors.lime} />}
           renderItem={({ item }) => (
             <Card onPress={() => navigation.navigate('TaskDetails', { id: item.id })}>

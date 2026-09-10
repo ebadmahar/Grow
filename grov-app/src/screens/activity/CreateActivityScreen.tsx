@@ -1,16 +1,21 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Radius, Typography } from '../../theme';
 import { Header } from '../../components/common/Header';
 import { Card } from '../../components/common/Card';
 import { MaterialIcons } from '@expo/vector-icons';
 
 export const CreateActivityScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
   return (
     <View style={styles.container}>
       <Header title="Log Ecological Activity" showNotification={false} />
 
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={[styles.content, { paddingBottom: Math.max(insets.bottom + 95, 110) }]}
+      >
         <Text style={styles.heading}>Select Activity Type</Text>
         <Text style={styles.subHeading}>Choose the restoration action you performed in the field</Text>
 
