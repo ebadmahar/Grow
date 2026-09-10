@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "grov-staging",
+    "staging": "grov-staging",
+    "production": "grov-production"
+  }
+}

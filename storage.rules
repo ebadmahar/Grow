@@ -1,0 +1,44 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.isAdmin == true;
+    }
+
+    // Avatar images — owner write, public read
+    match /avatars/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if isOwner(userId)
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Activity evidence photos — read public, uploaded via Cloud Functions / server pipelines
+    match /activities/{allPaths=**} {
+      allow read: if true;
+      allow write: if false; // Uploads orchestrated via Cloud Functions
+    }
+
+    // Community task cover images — read public, admin write
+    match /community-tasks/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Monitoring record photos — read authenticated, uploaded via Cloud Functions
+    match /monitoring/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if false;
+    }
+  }
+}
